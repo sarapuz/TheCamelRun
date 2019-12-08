@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bkg.jpg</file>
+        <file>bkg.png</file>
+        <file>sky.png</file>
+        <file>game_bg.png</file>
+        <file>platformer_bkg.jpg</file>
+        <file>camel.png</file>
+        <file>cactus.png</file>
+        <file>cactus2.png</file>
+        <file>floor_tile.png</file>
+    </qresource>
+</RCC>
