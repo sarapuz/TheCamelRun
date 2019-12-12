@@ -15,7 +15,7 @@
 
 GameScene::GameScene(QObject *parent) :
     QGraphicsScene(parent),
-    mVelocity(2),
+    mVelocity(3),
     mWorldShift(0),
     mMinX(0),
     mMaxX(0),
