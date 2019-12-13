@@ -24,6 +24,10 @@ class GameScene : public QGraphicsScene
                READ jumpFactor
                WRITE setJumpFactor
                NOTIFY jumpFactorChanged)
+    Q_PROPERTY(qreal slideFactor
+               READ slideFactor
+               WRITE setSlideFactor
+               NOTIFY slideFactorChanged)
 public:
     explicit GameScene(QObject *parent = 0);
 
@@ -38,7 +42,9 @@ public:
 
     int collidingDirection() const;
     void setCollidingDirection(int collidingDirection);
+    qreal slideFactor() const;
 
+    void setSlideFactor(const qreal &slideFactor);
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -54,6 +60,7 @@ public slots:
 
 signals:
     void jumpFactorChanged(qreal);
+    void slideFactorChanged(qreal);
     void healthBarChanged(int);
     void youLost();
 
@@ -74,6 +81,8 @@ private:
     int mHorizontalInput;
     qreal mJumpFactor;
     QPropertyAnimation *mJumpAnimation;
+    qreal mSlideFactor;
+    QPropertyAnimation *mSlideAnimation;
     int mJumpHeight;
     bool mColliding;
     int mCollidingDirection;
@@ -86,6 +95,7 @@ private:
     bool checkCollidingH();
     bool checkCollidingV();
     void sinking();
+    void slide();
 
 };
 

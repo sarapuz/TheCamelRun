@@ -20,9 +20,9 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
 
 
     // Starting scenes from menu
-    connect(mMenuScene->mStartBtn, &QPushButton::clicked, [this](){this->renderScene(this->mGameScene);});
+//    connect(mMenuScene->mStartBtn, &QPushButton::clicked, [this](){this->renderScene(this->mGameScene);});
 //    connect(mMenuScene->mStartBtn, &QPushButton::clicked, this, &GameManager::startGame);
-//    connect(mMenuScene->mStartBtn, SIGNAL(clicked()), this, SLOT(startGame()));
+    connect(mMenuScene->mStartBtn, SIGNAL(clicked()), this, SLOT(startGame()));
     connect(mMenuScene->mSettingsBtn, SIGNAL(clicked()), this, SLOT(startSettings()));
     connect(mMenuScene->mHighBtn, SIGNAL(clicked()), this, SLOT(startHighscore()));
 

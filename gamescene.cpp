@@ -24,6 +24,7 @@ GameScene::GameScene(QObject *parent) :
     mGroundLevel(583),
     mHorizontalInput(0),
     mJumpAnimation(new QPropertyAnimation(this)),
+    mSlideAnimation(new QPropertyAnimation(this)),
     mJumpHeight(180),
     mColliding(false),
     mCollidingDirection(0)
@@ -46,6 +47,14 @@ GameScene::GameScene(QObject *parent) :
     mJumpAnimation->setEndValue(0);
     mJumpAnimation->setDuration(800);
     mJumpAnimation->setEasingCurve(QEasingCurve::OutInQuad);
+
+    mSlideAnimation->setTargetObject(this);
+    mSlideAnimation->setPropertyName("slideFactor");
+    mSlideAnimation->setStartValue(0);
+    mSlideAnimation->setKeyValueAt(0.5, 0.5);
+    mSlideAnimation->setEndValue(0);
+    mSlideAnimation->setDuration(600);
+    mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
 
     //connect(this, SIGNAL(currentHealtChanged(qreal)), this, SLOT(updateHealthBar(qreal)));
 
@@ -258,10 +267,15 @@ void GameScene::checkTimer()
  */
 void GameScene::resetScene()
 {
+    mPlayer->setDirection(3);
     mPlayer ->setPos(mMinX, mGroundLevel - mPlayer ->boundingRect().height() / 2);
     mCurrentX = mMinX;
     mCurrentY = mGroundLevel - mPlayer ->boundingRect().height() / 2;
     mPlayer->setCurrentHealth(mPlayer->maxHealth());
+    mPlayer->setOffset(-mPlayer->pixmap().width() / 2, -mPlayer->pixmap().height() / 2);
+    QTransform t = mPlayer->transform();
+    t.reset();
+    mPlayer->setTransform(t);
     mHealthBar->setValue(mPlayer->maxHealth());
     mColliding = false;
     mCollidingDirection = 1;
@@ -291,9 +305,20 @@ void GameScene::jump()
     }    
 }
 
+void GameScene::slide(){
+    if (QAbstractAnimation::Stopped == mSlideAnimation->state()) {
+        mSlideAnimation->start();
+    }
+}
+
 qreal GameScene::jumpFactor() const
 {
     return mJumpFactor;
+}
+
+qreal GameScene::slideFactor() const
+{
+    return mSlideFactor;
 }
 
 /*!
@@ -314,7 +339,24 @@ void GameScene::setJumpFactor(const qreal &jumpFactor)
     qreal groundY = (mGroundLevel - mPlayer->boundingRect().height() / 2);
     qreal y = groundY - mJumpAnimation->currentValue().toReal() * mJumpHeight;
     mPlayer->setY(y);
+}
 
+void GameScene::setSlideFactor(const qreal &slideFactor)
+{
+
+    if (mSlideFactor == slideFactor) {
+        return;
+    }
+
+    mSlideFactor = slideFactor;
+    emit slideFactorChanged(mSlideFactor);
+
+    qreal groundY = (mMinY - mPlayer->boundingRect().height() / 2);
+    qreal y = groundY - mSlideAnimation->currentValue().toReal() * mJumpHeight;
+    qDebug() << mSlideAnimation->currentValue().toReal();
+    mCurrentX += 2;
+    mPlayer->setX(mCurrentX);
+    mPlayer->setY(y);
 }
 
 /*!
@@ -397,6 +439,9 @@ bool GameScene::checkCollidingV()
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0)
                     emit youLost();
+                // simulirati preskakanje!
+                slide();
+
             }
             return true;
         }
@@ -425,6 +470,24 @@ void delay(int delayTime){
  */
 void GameScene::sinking(){
     mBackBtn->setEnabled(false);
+
+
+
+    // Rotacija
+    mPlayer->setTransformationMode(Qt::SmoothTransformation);
+    mPlayer->setOffset(10,-20);
+    QTransform t = mPlayer->transform();
+    for(int i = 0; i < 9; i++){
+        t.rotate(10);
+        mPlayer->setTransform(t);
+        mCurrentX = mCurrentX + mPlayer->direction() * 10;
+        mPlayer->setX(mCurrentX);
+        mCurrentY = mCurrentY + 10;
+        mPlayer->setY(mCurrentY++);
+        delay(70);
+    }
+    //mPlayer->setOffset(-mPlayer->pixmap().width() / 2, -mPlayer->pixmap().height() / 2);
+    // Propadanje
     while(mPlayer->y() - mPlayer->boundingRect().height() < mMinY){
         qDebug() << mPlayer->y();
         mPlayer->setY(mCurrentY++);
