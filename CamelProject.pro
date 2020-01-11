@@ -1,4 +1,4 @@
-QT       += core gui widgets gamepad
+QT       += core gui widgets gamepad multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -8,6 +8,7 @@ HEADERS += \
     SceneStates.h \
     backgrounditem.h \
     cactus.h \
+    coin.h \
     floor.h \
     gamemanager.h \
     gamescene.h \
@@ -16,11 +17,14 @@ HEADERS += \
     menuscene.h \
     platform.h \
     player.h \
-    settingsscene.h
+    settingsscene.h \
+    tree.h \
+    winningscene.h
 
 SOURCES += \
     backgrounditem.cpp \
     cactus.cpp \
+    coin.cpp \
     floor.cpp \
     gamemanager.cpp \
     gamescene.cpp \
@@ -30,7 +34,9 @@ SOURCES += \
     menuscene.cpp \
     platform.cpp \
     player.cpp \
-    settingsscene.cpp
+    settingsscene.cpp \
+    tree.cpp \
+    winningscene.cpp
 
 RESOURCES += \
     resource.qrc

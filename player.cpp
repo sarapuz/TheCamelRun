@@ -4,7 +4,8 @@ Player::Player(QGraphicsItem *parent)
     : QGraphicsPixmapItem(parent),
       mDirection(0),
       mCurrentHealth(10),
-      mMaxHealth(10)
+      mMaxHealth(10),
+      mWealth(0)
 {
     QPixmap pixmap(":/camel.png");
     setPixmap(pixmap);
@@ -64,4 +65,18 @@ bool Player::causeDamage(int damage)
    }
     else
         return false;
+}
+
+int Player::wealth() const
+{
+    return mWealth;
+}
+
+void Player::addCoin(){
+    mWealth++;
+}
+
+void Player::setWealth(int wealth)
+{
+    mWealth = wealth;
 }

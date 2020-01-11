@@ -17,13 +17,17 @@ class Player : public QGraphicsPixmapItem
     int maxHealth() const;
     void setMaxHealth(int maxHealth);
 
-    bool causeDamage(int);
+    int wealth() const;
+    void setWealth(int wealth);
 
+    bool causeDamage(int);
+    void addCoin();
 
 private:
     int mDirection;
     int mCurrentHealth;
     int mMaxHealth;
+    int mWealth;
 };
 
 #endif // PLAYER_H

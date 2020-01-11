@@ -15,9 +15,36 @@ public:
     explicit SettingsScene(QObject *parent = 0);
 
     BackgroundItem *mBkg;
-
     QLabel *mSettingsLb;
     QPushButton *mBackBtn;
+
+    QPushButton *mSoundBtn;
+    QLabel *mSoundLb;
+
+    QLabel *mKeysLb;
+    QLabel *mLeftLb;
+    QLabel *mRightLb;
+    QLabel *mJumpLb;
+    QPushButton *mLeftBtn;
+    QPushButton *mRightBtn;
+    QPushButton *mJumpBtn;
+
+
+    void setSoundIcon();
+    void resetButtons();
+
+public slots:
+    void changeLeftKey();
+    void changeRightKey();
+    void changeJumpKey();
+
+signals:
+    void leftKeyChanged(int);
+    void rightKeyChanged(int);
+    void jumpKeyChanged(int);
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 };
 

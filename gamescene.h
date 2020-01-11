@@ -6,10 +6,12 @@
 #include <QPushButton>
 #include <QProgressBar>
 #include <QTimer>
+#include <QLabel>
 
 class BackgroundItem;
 class Player;
 class Cactus;
+class Tree;
 
 /*!
   \class GameScene
@@ -54,22 +56,33 @@ private slots:
     void movePlayer();
     void checkTimer();
     void resetScene();
+    void updateCoinCounter();
 
 public slots:
     void updateHealthBar(int);
+    void changeLeftKey(int);
+    void changeRightKey(int);
+    void changeJumpKey(int);
 
 signals:
     void jumpFactorChanged(qreal);
     void slideFactorChanged(qreal);
     void healthBarChanged(int);
     void youLost();
+    void youWon();
+    void coinGathered();
 
 private:
-    QProgressBar *mHealthBar;
 
     Player* mPlayer;
     QGraphicsRectItem *mCacti;
     QGraphicsRectItem *mFloor;
+    QGraphicsRectItem *mTree;
+    QGraphicsRectItem *mCoins;
+
+    QProgressBar *mHealthBar;
+    QGraphicsEllipseItem *mCoinsPicture;
+    QLabel *mCoinsLabel;
 
     QTimer mTimer;
     int mVelocity;
@@ -86,6 +99,11 @@ private:
     int mJumpHeight;
     bool mColliding;
     int mCollidingDirection;
+
+    Qt::Key mLeftKey;
+    Qt::Key mRightKey;
+    Qt::Key mJumpKey;
+
 
     void jump();
     void addHorizontalInput(int input);

@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>bkg.jpg</file>
-        <file>bkg.png</file>
         <file>sky.png</file>
         <file>game_bg.png</file>
         <file>platformer_bkg.jpg</file>
@@ -9,5 +7,13 @@
         <file>cactus.png</file>
         <file>cactus2.png</file>
         <file>floor_tile.png</file>
+        <file>tree.png</file>
+        <file>newFont.ttf</file>
+        <file>NEWfONT2.ttf</file>
+        <file>menuBkg.png</file>
+        <file>settings.ini</file>
+        <file>soundON.ico</file>
+        <file>soundOFF.ico</file>
+        <file>DesertSound.wav</file>
     </qresource>
 </RCC>

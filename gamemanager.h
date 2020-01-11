@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QMap>
 #include <QGraphicsView>
+#include <QSettings>
 
 #include "SceneStates.h"
 
@@ -13,7 +14,8 @@ class GameScene;
 class SettingsScene;
 class HighscoreScene;
 class LosingScene;
-
+class WinningScene;
+class QSound;
 
 /*!
   \class GameManager
@@ -29,6 +31,7 @@ class GameManager : public QMainWindow
 public:
     explicit GameManager(QWidget *parent = nullptr);
 
+    // proba*
 
     QGraphicsView mView;
     SceneStates::State mCurrentState;
@@ -37,7 +40,9 @@ public:
     SettingsScene *mSettingsScene;
     HighscoreScene *mHighscoreScene;
     LosingScene *mLosingScene;
+    WinningScene *mWinningScene;
 
+    QSound *mSound;
     //QMap<const SceneStates::State, QGraphicsScene> mSceneStates;
 
     void renderScene(QGraphicsScene*);
@@ -47,6 +52,7 @@ public:
 
 signals:
    void currentStateChanged();
+   void soundChanged();
 
 public slots:
     void startGame();
@@ -54,6 +60,14 @@ public slots:
     void startMenu();
     void startHighscore();
     void startYouLost();
+    void startYouWon();
+    void changeSoundMode();
+    void playSound();
+
+private:
+    void loadSettigs();
+    void saveSettings();
+
 };
 
 #endif // GAMEMANAGER_H

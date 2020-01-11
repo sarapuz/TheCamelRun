@@ -4,7 +4,7 @@
 HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
 {
       setSceneRect(0, 0, 1248, 585);
-      mBkg = new BackgroundItem(QPixmap("://bkg.png"));
+      mBkg = new BackgroundItem(QPixmap("://menuBkg.png"));
       addItem(mBkg);
 
       mBackBtn = new QPushButton();
