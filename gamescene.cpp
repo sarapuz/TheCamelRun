@@ -20,6 +20,7 @@
 
 GameScene::GameScene(QObject *parent) :
     QGraphicsScene(parent),
+    mLevel(1),
     mVelocity(3),
     mWorldShift(0),
     mMinX(0),
@@ -269,7 +270,6 @@ void GameScene::keyReleaseEvent(QKeyEvent *event)
     */
     if(event->key() == mRightKey){
         addHorizontalInput(-1);
-       // emit youWon();
     }
     else if(event->key() == mLeftKey){
         addHorizontalInput(1);
@@ -365,11 +365,14 @@ void GameScene::resetScene()
     mPlayer->setCurrentHealth(mPlayer->maxHealth());
     mPlayer->setOffset(-mPlayer->pixmap().width() / 2, -mPlayer->pixmap().height() / 2);
     QTransform t = mPlayer->transform();
+    mPlayer->setWealth(0);
     t.reset();
     mPlayer->setTransform(t);
     mHealthBar->setValue(mPlayer->maxHealth());
     mColliding = false;
     mCollidingDirection = 1;
+
+    applyParallax(1, mBkg);
 
     initPlayField();
     initLevelOne();
@@ -414,6 +417,16 @@ void GameScene::changeJumpKey(int newKey)
     QSettings settings;
     settings.setValue("JumpKey", QVariant::fromValue(Qt::Key(newKey)).toString());
     mJumpKey = Qt::Key(newKey);
+}
+
+int GameScene::level() const
+{
+    return mLevel;
+}
+
+void GameScene::setLevel(int level)
+{
+    mLevel = level;
 }
 
 int GameScene::collidingDirection() const
@@ -543,7 +556,7 @@ bool GameScene::checkCollidingH()
         }
         if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
             delay(15);
-            emit youWon();
+            emit youWon(mLevel, mPlayer->wealth());
             return true;
         }
     }
@@ -572,7 +585,7 @@ bool GameScene::checkCollidingV()
         }
         if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
             delay(15);
-            emit youWon();
+            emit youWon(mLevel, mPlayer->wealth());
             return true;
         }
         if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {

@@ -47,6 +47,11 @@ public:
     qreal slideFactor() const;
 
     void setSlideFactor(const qreal &slideFactor);
+    int level() const;
+    void setLevel(int level);
+
+
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -55,21 +60,22 @@ protected:
 private slots:
     void movePlayer();
     void checkTimer();
-    void resetScene();
     void updateCoinCounter();
+
 
 public slots:
     void updateHealthBar(int);
     void changeLeftKey(int);
     void changeRightKey(int);
     void changeJumpKey(int);
+    void resetScene();
 
 signals:
     void jumpFactorChanged(qreal);
     void slideFactorChanged(qreal);
     void healthBarChanged(int);
     void youLost();
-    void youWon();
+    void youWon(int lvl, int coins);
     void coinGathered();
 
 private:
@@ -84,6 +90,7 @@ private:
     QGraphicsEllipseItem *mCoinsPicture;
     QLabel *mCoinsLabel;
 
+    int mLevel;
     QTimer mTimer;
     int mVelocity;
     int mWorldShift;

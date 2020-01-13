@@ -22,10 +22,16 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
     settings.setValue("LeftKey", "Key_Left");
     settings.setValue("RightKey", "Key_Right");
     settings.setValue("JumpKey", "Key_Space");
-    QList<QList<QString> > score_list;
-    score_list.append(QList<QString>({"1", "Sara", "34"}));
-    //settings.setValue("ScoreList", QVariant(score_list));
 
+    QList<QString> score({"No name", "0"});
+    settings.setValue("Lvl1_1", QVariant(score));
+    QString settingsAttribute;
+    for(int i = 1; i < 3; i++){
+        for(int j = 1; j < 6; j++){
+            settingsAttribute = QString("Lvl%1_%2").arg(i).arg(j);
+            settings.setValue(settingsAttribute, QVariant(score));
+        }
+    }
 
     mCurrentState = SceneStates::MenuScene;
     mMenuScene = new MenuScene();
@@ -58,8 +64,9 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
     connect(mGameScene, SIGNAL(youLost()), mGameScene, SLOT(resetScene()));
     connect(mGameScene, SIGNAL(youLost()), this, SLOT(startYouLost()));
     connect(mLosingScene, SIGNAL(backToMenu()), this, SLOT(startMenu()));
-    connect(mGameScene, SIGNAL(youWon()), mGameScene, SLOT(resetScene()));
-    connect(mGameScene, SIGNAL(youWon()), this, SLOT(startYouWon()));
+    //connect(mGameScene, SIGNAL(youWon()), mGameScene, SLOT(resetScene()));
+    connect(mGameScene, SIGNAL(youWon(int,int)), this, SLOT(startYouWon(int,int)));
+    //connect(mGameScene, &GameScene::youWon, [this](){ startYouWon(int lvl, int coins); mGameScene->resetScene();});
 
     connect(mSettingsScene->mSoundBtn, SIGNAL(clicked()), this, SLOT(changeSoundMode()));
     connect(mWinningScene, SIGNAL(backToMenu()), this, SLOT(startMenu()));
@@ -68,6 +75,9 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
     connect(mSettingsScene, SIGNAL(rightKeyChanged(int)), mGameScene, SLOT(changeRightKey(int)));
     connect(mSettingsScene, SIGNAL(jumpKeyChanged(int)), mGameScene, SLOT(changeJumpKey(int)));
 
+    connect(mWinningScene, SIGNAL(candidateForHighscore(int,QString,int)), mHighscoreScene, SLOT(updateTables(int,QString,int)));
+    //disconnect(mHighscoreScene->mLv1Tb, &QTableWidget::itemDoubleClicked, 0, 0);
+    //disconnect(mHighscoreScene->mLv2Tb, SIGNAL(itemDoubleClicked(&item)), 0, 0);
 
     mSound = new QSound("://DesertSound.wav");
     if (settings.value("Sound","").toString() == "On"){
@@ -92,6 +102,7 @@ void GameManager::renderScene(QGraphicsScene *currentScene)
 
 void GameManager::startGame()
 {
+    mGameScene->resetScene();
     renderScene(mGameScene);
 }
 
@@ -116,8 +127,10 @@ void GameManager::startYouLost()
     renderScene(mLosingScene);
 }
 
-void GameManager::startYouWon()
+void GameManager::startYouWon(int lvl, int coins)
 {
+    mWinningScene->mTempLvl = lvl;
+    mWinningScene->mTempCoins = coins;
     renderScene(mWinningScene);
 }
 
@@ -127,11 +140,9 @@ void GameManager::changeSoundMode()
     QString soundOffOn = settings.value("Sound", "").toString();
 
     if (soundOffOn == "On"){
-        qDebug() << "Changing sound to OFF!";
         settings.setValue("Sound", "Off");
     }
     else{
-        qDebug() << "Changing sound to ON!";
         settings.setValue("Sound", "On");
 
     }

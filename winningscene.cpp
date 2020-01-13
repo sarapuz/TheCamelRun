@@ -34,8 +34,9 @@ WinningScene::WinningScene(QObject *parent) : QGraphicsScene(parent)
 
 
     mNameLe = new QLineEdit();
+    mNameLe->setFocus();
     mNameLe->setPlaceholderText("Name");
-    mNameLe->setMaxLength(15);
+    mNameLe->setMaxLength(10);
     mNameLe->setGeometry(QRect(this->width()/2 - 325, 220, 300, 30));
     addWidget(mNameLe);
 
@@ -45,29 +46,14 @@ WinningScene::WinningScene(QObject *parent) : QGraphicsScene(parent)
     addWidget(mConfirmBtn);
 
     connect(mConfirmBtn, SIGNAL(clicked()), this, SLOT(saveNameAndExit()));
+
+    mNameLe->setFocus();
 }
 
 void WinningScene::saveNameAndExit()
 {
-    qDebug() << mNameLe->text();
-    mNameLe->setText("");
+    emit candidateForHighscore(mTempLvl, mNameLe->text(), mTempCoins);
     emit backToMenu();
+    mNameLe->setText("");
 }
 
-/*
-void WinningScene::keyPressEvent(QKeyEvent *event)
-{
-
-    if(!mNameLe->hasFocus()){
-        if (event->isAutoRepeat()) {
-            return;
-        }
-        if (event->key() == Qt::Key_Q) {
-            emit backToMenu();
-        }
-    }
-
-//    emit backToMenu();void
-}
-
-*/

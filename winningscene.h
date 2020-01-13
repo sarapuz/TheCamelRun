@@ -21,11 +21,15 @@ public:
     QLineEdit *mNameLe;
     QPushButton *mConfirmBtn;
 
+    int mTempLvl;
+    int mTempCoins;
+
 protected:
     //void keyPressEvent(QKeyEvent *event);
 
 signals:
     void backToMenu(); 
+    void candidateForHighscore(int,QString,int);
 
 public slots:
     void saveNameAndExit();

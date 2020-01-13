@@ -60,7 +60,7 @@ public slots:
     void startMenu();
     void startHighscore();
     void startYouLost();
-    void startYouWon();
+    void startYouWon(int, int);
     void changeSoundMode();
     void playSound();
 
