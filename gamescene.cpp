@@ -221,7 +221,7 @@ void GameScene::initLevelOne(){
     QList<int> numOfCacti({1,1,2,2,3,2, 1});
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
-            Cactus *c = new Cactus(mCacti);
+            Cactus *c = new Cactus(mCacti, mGenerator.bounded(1,3));
             int temp = mGenerator.bounded(lowerBound[i], upperBound[i]);
             c->setPos(temp, mCacti->boundingRect().height() - c->boundingRect().height()/2);
         }
@@ -266,7 +266,7 @@ void GameScene::initLevelTwo(){
     QList<int> numOfCacti({1,2,1,2,2,2,2,3});
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
-            Cactus *c = new Cactus(mCacti);
+            Cactus *c = new Cactus(mCacti, mGenerator.bounded(1,4));
             int temp = mGenerator.bounded(lowerBound[i], upperBound[i]);
             c->setPos(temp, mCacti->boundingRect().height() - c->boundingRect().height()/2);
         }
@@ -479,7 +479,7 @@ void GameScene::updateCoinCounter()
 {
     mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
 }
-/*
+/*Cac
 void GameScene::moveScorpio()
 {
     if (!mPlayer->live())

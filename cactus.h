@@ -17,7 +17,7 @@ class Cactus : public QGraphicsPixmapItem
 {
 
 public:
-    explicit Cactus(QGraphicsItem *parent = 0);
+    explicit Cactus(QGraphicsItem *parent = 0, int level=1);
 
     int getHeight() const;
     int getWidth() const;

@@ -7,11 +7,29 @@
     \brief Cactus::Cactus(QGraphicsItem *parent)
     Constructs an instance of Cactus class.
  */
-Cactus::Cactus(QGraphicsItem *parent) :
+Cactus::Cactus(QGraphicsItem *parent, int level) :
     QGraphicsPixmapItem(parent),
     mDamage(1)
 {
-    QPixmap pixmap("://cactus2.png");
+    QString pixmapPath;
+    switch (level) {
+        case 1:{
+            pixmapPath = ":/cactusLvl1.png";
+            mDamage = 1;
+            break;
+        }
+        case 2: {
+            pixmapPath = ":/cactusLv2.png";
+            mDamage = 2;
+            break;
+        }
+        case 3:{
+            pixmapPath = ":/cactusLv3.png";
+            mDamage = 3;
+            break;
+        }
+    }
+    QPixmap pixmap(pixmapPath);
     setPixmap(pixmap);
     setOffset(-pixmap.width() / 2, -pixmap.height() / 2);
 

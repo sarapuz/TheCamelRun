@@ -4,8 +4,7 @@
         <file>game_bg.png</file>
         <file>platformer_bkg.jpg</file>
         <file>camel.png</file>
-        <file>cactus.png</file>
-        <file>cactus2.png</file>
+        <file>cactusLvl1.png</file>
         <file>floor_tile.png</file>
         <file>tree.png</file>
         <file>newFont.ttf</file>
@@ -18,5 +17,7 @@
         <file>back.png</file>
         <file>scorpio.png</file>
         <file>reset.png</file>
+        <file>cactusLv2.png</file>
+        <file>cactusLv3.png</file>
     </qresource>
 </RCC>
