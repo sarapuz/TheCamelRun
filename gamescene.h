@@ -7,11 +7,13 @@
 #include <QProgressBar>
 #include <QTimer>
 #include <QLabel>
+#include <QRandomGenerator>
 
 class BackgroundItem;
 class Player;
 class Cactus;
 class Tree;
+class Scorpio;
 
 /*!
   \class GameScene
@@ -49,19 +51,19 @@ public:
     void setSlideFactor(const qreal &slideFactor);
     int level() const;
     void setLevel(int level);
-
-
+    void revivePlayer();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
     void initLevelOne();
+    void initLevelTwo();
 
 private slots:
     void movePlayer();
     void checkTimer();
     void updateCoinCounter();
-
+    void moveScorpio();
 
 public slots:
     void updateHealthBar(int);
@@ -69,6 +71,8 @@ public slots:
     void changeRightKey(int);
     void changeJumpKey(int);
     void resetScene();
+    void resetPlayer();
+    void startLevel(int lvl);
 
 signals:
     void jumpFactorChanged(qreal);
@@ -78,6 +82,7 @@ signals:
     void youWon(int lvl, int coins);
     void coinGathered();
 
+
 private:
 
     Player* mPlayer;
@@ -86,12 +91,18 @@ private:
     QGraphicsRectItem *mTree;
     QGraphicsRectItem *mCoins;
 
+    QGraphicsRectItem *mScor;
+    Scorpio *mEnemy;
+    QList<Scorpio*> mScorpios;
+
     QProgressBar *mHealthBar;
     QGraphicsEllipseItem *mCoinsPicture;
     QLabel *mCoinsLabel;
 
+    QRandomGenerator mGenerator;
     int mLevel;
     QTimer mTimer;
+    QTimer mTimerEn;
     int mVelocity;
     int mWorldShift;
     qreal mMinX, mMaxX, mMinY;
@@ -121,6 +132,7 @@ private:
     bool checkCollidingV();
     void sinking();
     void slide();
+
 
 };
 

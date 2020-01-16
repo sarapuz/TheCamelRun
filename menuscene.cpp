@@ -4,6 +4,7 @@
 #include <QFontDatabase>
 #include <QFont>
 
+
 MenuScene::MenuScene(QObject *parent) :
     QGraphicsScene(parent)
 {

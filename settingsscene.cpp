@@ -46,8 +46,9 @@ SettingsScene::SettingsScene(QObject *parent) : QGraphicsScene(parent)
       mSettingsLb->setAlignment(Qt::AlignTop | Qt::AlignCenter );
 
       mBackBtn = new QPushButton();
-      mBackBtn->setText("Back");
-      mBackBtn->setGeometry(this->width() - 100, 5, 90,30);
+      mBackBtn->setStyleSheet("border-image: url(://back.png);");
+      mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
+      mBackBtn->setGeometry(this->width() - 100, 15, 80,80);
 
       mSoundLb = new QLabel();
       mSoundLb->setText("Sound: ");

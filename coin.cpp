@@ -13,6 +13,7 @@ Coin::Coin(QGraphicsItem *parent) :
     setPen(QPen(QColor(218, 165, 32), 2));
     setBrush(QColor(255, 223, 0));
     setRect(-12, -12, 24, 24);
+
 }
 
 

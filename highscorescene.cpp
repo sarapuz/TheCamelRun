@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QPair>
 
+
 HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
 {
       setSceneRect(0, 0, 1248, 585);
@@ -18,8 +19,9 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       QFont fontFont(family, 25);
 
       mBackBtn = new QPushButton();
-      mBackBtn->setText("Back");
-      mBackBtn->setGeometry(this->width() - 100, 5, 90,30);
+      mBackBtn->setStyleSheet("border-image: url(://back.png);");
+      mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
+      mBackBtn->setGeometry(this->width() - 100, 15, 80,80);
 
       // Heading of scene
       mHeadingLb = new QLabel();
@@ -96,7 +98,7 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
             mLv2Tb->setItem(i,1, new QTableWidgetItem(settings.value(QString("Lvl2_%1").arg(i+1), "").toStringList()[1]));
             (mLv2Tb->item(i,0))->setFlags(Qt::ItemIsEnabled);
             (mLv2Tb->item(i,1))->setFlags(Qt::ItemIsEnabled);
-            QPair<QString, int> onePair(settings.value(QString("Lvl1_%2").arg(i+1), "").toStringList()[0], settings.value(QString("Lvl2_%1").arg(i+1), "").toStringList()[1].toInt());
+            QPair<QString, int> onePair(settings.value(QString("Lvl2_%2").arg(i+1), "").toStringList()[0], settings.value(QString("Lvl2_%1").arg(i+1), "").toStringList()[1].toInt());
             mScoreLv2.append(onePair);
       }
       mLv2Tb->resizeColumnsToContents();
@@ -163,7 +165,7 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
         // provjeri je li score veci od dosadasnjih
         for(int i = 0; i < 5; i++){
             //if ( i > settings.value(QString("Lvl1_%1").arg(i + 1), "").toStringList()[1].toInt()){
-            if (score > mScoreLv1[i].second){
+            if (score >= mScoreLv1[i].second){
                 mScoreLv1.insert(i, QPair<QString,int>(name, score));
                 mScoreLv1.pop_back();
                 updateHighscore();
@@ -175,7 +177,7 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
         // provjeri je li score veci od dosadasnjih
         for(int i = 0; i < 5; i++){
             //if ( i > settings.value(QString("Lvl1_%1").arg(i + 1), "").toStringList()[1].toInt()){
-            if (score > mScoreLv2[i].second){
+            if (score >= mScoreLv2[i].second){
                 mScoreLv2.insert(i, QPair<QString,int>(name, score));
                 mScoreLv2.pop_back();
                 updateHighscore();

@@ -1,11 +1,10 @@
-QT       += core gui widgets gamepad multimedia
+QT       += core gui widgets multimedia concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
 HEADERS += \
-    SceneStates.h \
     backgrounditem.h \
     cactus.h \
     coin.h \
@@ -17,6 +16,7 @@ HEADERS += \
     menuscene.h \
     platform.h \
     player.h \
+    scorpio.h \
     settingsscene.h \
     tree.h \
     winningscene.h
@@ -34,6 +34,7 @@ SOURCES += \
     menuscene.cpp \
     platform.cpp \
     player.cpp \
+    scorpio.cpp \
     settingsscene.cpp \
     tree.cpp \
     winningscene.cpp

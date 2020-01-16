@@ -1,5 +1,6 @@
 #include "platform.h"
 
+
 Platform::Platform(QGraphicsItem *parent) :
     QGraphicsPixmapItem(parent)
 {

@@ -53,7 +53,7 @@ WinningScene::WinningScene(QObject *parent) : QGraphicsScene(parent)
 void WinningScene::saveNameAndExit()
 {
     emit candidateForHighscore(mTempLvl, mNameLe->text(), mTempCoins);
-    emit backToMenu();
+    emit levelWon(mTempLvl);
     mNameLe->setText("");
 }
 

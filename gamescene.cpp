@@ -5,6 +5,7 @@
 #include "floor.h"
 #include "tree.h"
 #include "coin.h"
+#include "scorpio.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -15,8 +16,9 @@
 #include <QFontDatabase>
 #include <QGraphicsEllipseItem>
 #include <QSettings>
-
-
+#include <QRandomGenerator>
+#include <QThreadPool>
+#include <QtConcurrent>
 
 GameScene::GameScene(QObject *parent) :
     QGraphicsScene(parent),
@@ -38,29 +40,84 @@ GameScene::GameScene(QObject *parent) :
     mRightKey(Qt::Key_Right),
     mJumpKey(Qt::Key_Space)
 {
-
-    /* zbog Floora */
     mGroundLevel = mGroundLevel - 39;
     mMinY = mMinY - 39;
-    /* */
-
     mTimer.setInterval(10);
     connect(&mTimer, &QTimer::timeout, this, &GameScene::movePlayer);
+    mTimerEn.setInterval(100);
 
-    //>
+//    connect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
+
 
     mBackBtn = new QPushButton();
     mBkg = new BackgroundItem(QPixmap("://platformer_bkg.jpg"));
     mPlayer = new Player();
     mTree = new QGraphicsRectItem(0, 0, mFieldWidth, 300);
     mHealthBar = new QProgressBar();
-
     mCoinsLabel = new QLabel();
     mCoinsPicture = new QGraphicsEllipseItem();
 
-    initPlayField();
-    initLevelOne();
+    // <Set background
+    setSceneRect(0, 0, 1248, 585);
+    this->addItem(mBkg);
+    //>
 
+    // <Draw health bar
+    int id = QFontDatabase::addApplicationFont("://NEWfONT2.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont fontFont(family, 15);
+    mHealthBar->setMinimum(0);
+    mHealthBar->setMaximum(mPlayer->maxHealth());
+    mHealthBar->setValue(mPlayer->maxHealth());
+    mHealthBar->setGeometry(this->width()/2 - mHealthBar->width()/2, 15, 150, 30);
+    mHealthBar->setFont(fontFont);
+    QPalette p = palette();
+    p.setColor(QPalette::Highlight, Qt::darkGreen);
+    mHealthBar->setPalette(p);
+    this->addWidget(mHealthBar);
+    //>
+
+    // <Set coins label: presents number of coins acquired
+    fontFont.setPointSize(30);
+    mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
+    mCoinsLabel->setGeometry(QRect(55,15,100,50));
+    mCoinsLabel->setAttribute(Qt::WA_TranslucentBackground);
+    mCoinsLabel->setFont(fontFont);
+    mCoinsLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    this->addWidget(mCoinsLabel);
+    //>
+
+    // <Picture of coin next to the coin label - clarification
+    mCoinsPicture->setPen(QPen(QColor(218, 165, 32), 2));
+    mCoinsPicture->setBrush(QColor(255, 223, 0));
+    mCoinsPicture->setRect(0, 0, 45, 45);
+    mCoinsPicture->setPos(5,10);
+    this->addItem(mCoinsPicture);
+    //>
+
+    // <Create back button
+    fontFont.setPointSize(20);
+    mBackBtn->setStyleSheet("border-image: url(://back.png);");
+    mBackBtn->setFont(fontFont);
+    mBackBtn->setGeometry(this->width() - 110, 15, 80,80);
+    mBackBtn->setEnabled(true);
+    mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
+    this->addWidget(mBackBtn);
+    //>
+
+    // <Placing tree which represents end of level
+
+    this->addItem(mTree);
+    this->addItem(mPlayer );
+    //>
+
+
+/*    initPlayField();
+    initLevelOne();
+    */
+    startLevel(mLevel);
+
+    // Animation for jumping
     mJumpAnimation->setTargetObject(this);
     mJumpAnimation->setPropertyName("jumpFactor");
     mJumpAnimation->setStartValue(0);
@@ -69,35 +126,24 @@ GameScene::GameScene(QObject *parent) :
     mJumpAnimation->setDuration(800);
     mJumpAnimation->setEasingCurve(QEasingCurve::OutInQuad);
 
+    // Animation for sliding off cactus
     mSlideAnimation->setTargetObject(this);
     mSlideAnimation->setPropertyName("slideFactor");
     mSlideAnimation->setStartValue(0);
-    mSlideAnimation->setKeyValueAt(0.5, 0.5);
+    mSlideAnimation->setKeyValueAt(0.5, 0.3);
     mSlideAnimation->setEndValue(0);
     mSlideAnimation->setDuration(600);
     mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
-
-
-
-       //connect(this, SIGNAL(currentHealtChanged(qreal)), this, SLOT(updateHealthBar(qreal)));
-
 }
 
 
 /*!
  * \brief initialize play field with standard assets.
  *
- * GameScene::initPlayField initialize play field with standard assets such as
- * background, player, health bar, button for exiting the game
+ * GameScene::initPlayField initialize position of player in regards to the scene
  */
 void GameScene::initPlayField()
 {
-
-    // <Set background
-    setSceneRect(0, 0, 1248, 585);
-    this->addItem(mBkg);
-    //>
-
     int id = QFontDatabase::addApplicationFont("://NEWfONT2.ttf");
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont fontFont(family, 15);
@@ -110,92 +156,70 @@ void GameScene::initPlayField()
     mCurrentY = mGroundLevel - mPlayer ->boundingRect().height() / 2;
     //>
 
-    // <Draw health bar
-    mHealthBar->setMinimum(0);
-    mHealthBar->setMaximum(mPlayer->maxHealth());
-    mHealthBar->setValue(mPlayer->maxHealth());
-    mHealthBar->setGeometry(this->width()/2 - mHealthBar->width()/2, 15, 150, 30);
-    mHealthBar->setFont(fontFont);
-    QPalette p = palette();
-    p.setColor(QPalette::Highlight, Qt::darkGreen);
-    mHealthBar->setPalette(p);
-    this->addWidget(mHealthBar);
-    //>
-
-
-    fontFont.setPointSize(30);
-    mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
-    mCoinsLabel->setGeometry(QRect(55,15,100,50));
-    mCoinsLabel->setAttribute(Qt::WA_TranslucentBackground);
-    mCoinsLabel->setFont(fontFont);
-    mCoinsLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    this->addWidget(mCoinsLabel);
-
-
-    mCoinsPicture->setPen(QPen(QColor(218, 165, 32), 2));
-    mCoinsPicture->setBrush(QColor(255, 223, 0));
-    mCoinsPicture->setRect(0, 0, 45, 45);
-    mCoinsPicture->setPos(5,10);
-    this->addItem(mCoinsPicture);
-    // <Create
-    mBackBtn->setText("Back");
-    mBackBtn->setGeometry(this->width() - 100, 15, 90,30);
-    mBackBtn->setEnabled(true);
-
-    this->addWidget(mBackBtn);
-
+    // <Set position of tree
     mTree->setPen(Qt::NoPen);
     mTree->setPos(0, mGroundLevel - 260);
     Tree *t= new Tree(mTree);
     t->setPos(mMaxX - t->boundingRect().width(), 0);
+    // >
 
-
-    this->addItem(mTree);
-    this->addItem(mPlayer );
+    mBackBtn->setEnabled(true);
 }
 
-/*!   mStartBtn->setStyleSheet(
-                  "background: transparent;"
-                  "color: #000000;"
-                  "border: 8px solid #000000;"
-
-* \brief initiates floor holes, cacti and enemies
+/*!
+* \brief initiates floor holes, cacti and enemies for level 1
 *
 * GameScene::initLevelOne initiates floor holes, cacti and enemies.
  */
 void GameScene::initLevelOne(){
-
-    // Adding cacti to level ONE
-    mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
-    mCacti->setPen(Qt::NoPen);
-    mCacti->setPos(0, mGroundLevel - 100);
-    const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    for (int i = 0; i < 5; ++i) {
-        Cactus *c = new Cactus(mCacti);
-          c->setPos(mMinX + 300 + qrand() % xRange, mCacti->boundingRect().height() - c->boundingRect().height()/2);
-  //        c->setPos(mMinX + 200 + qrand() % xRange, mGroundLevel - c->boundingRect().height()/2);
+/*
+    mScor = new QGraphicsRectItem(0,0,mFieldWidth,60);
+    mScor->setPen(Qt::NoPen);
+    for(int i = 0; i < 2; i++){
+        Scorpio *s = new Scorpio(150 * (i+3), 100 *(i+1), mScor);
+        s->setPos(s->positionX(),s->positionY());
     }
-    this->addItem(mCacti);
-
-    // Setting the floor and holes for level ONE
+    addItem(mScor);
+    mTimerEn.start();
+  */
+    // Setting the floor and holes
     mFloor = new QGraphicsRectItem(0,0,mFieldWidth,39);
     mFloor->setPen(Qt::NoPen);
-    //mFloor->setPos(0, 2*mGroundLevel);
+    QList<int> notVisible({10,11,12,13, 22,23,24, 39,40,41,42, 80,81,82});
     int numOfTiles = mFieldWidth / 39;
     for(int i = 0; i < numOfTiles; i++){
-        if( i < 10 || i > 13){
-            Floor *f_tile = new Floor(mFloor);
-            f_tile->setPos(i*39, mGroundLevel);
-            f_tile->setVisible(true);
-        }
-        else{
+        if (notVisible.contains(i)){
             Floor *f_tile = new Floor(mFloor);
             f_tile->setPos(i*39, mGroundLevel);
             f_tile->setOpacity(0);
             f_tile->setVisible(false);
         }
+        else{
+            Floor *f_tile = new Floor(mFloor);
+            f_tile->setPos(i*39, mGroundLevel);
+            f_tile->setVisible(true);
+        }
     }
     this->addItem(mFloor);
+
+
+    // Adding cacti
+    mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
+    mCacti->setPen(Qt::NoPen);
+    mCacti->setPos(0, mGroundLevel - 100);
+    const int xRange = (mMaxX - mMinX - 200) * 0.94;
+    QList<int> lowerBound({int(mMinX) + 100, 517, 966, 1668, 2200, 3300, 4000});
+    QList<int> upperBound({360, 828, 1491, 2200, 3090, 4000, xRange});
+    QList<int> numOfCacti({1,1,2,2,3,2, 1});
+    for (int i = 0; i < 7; ++i) {
+        for (int j = 0; j < numOfCacti[i]; j++){
+            Cactus *c = new Cactus(mCacti);
+            int temp = mGenerator.bounded(lowerBound[i], upperBound[i]);
+            c->setPos(temp, mCacti->boundingRect().height() - c->boundingRect().height()/2);
+            qDebug() << "Cactus: " << i << j <<temp;
+        }
+    }
+    this->addItem(mCacti);
 
     mCoins = new QGraphicsRectItem(0,0,mFieldWidth, mJumpHeight);
     mCoins->setPen(Qt::NoPen);
@@ -205,7 +229,89 @@ void GameScene::initLevelOne(){
         co->setPos(mMinX + 200 + qrand() % xRange, qrand() % mJumpHeight - 39 - co->boundingRect().height());
     }
     addItem(mCoins);
+}
 
+
+/*! \brief initiates floor holes, cacti and enemies for level 2
+*
+* GameScene::initLevelOne initiates floor holes, cacti and enemies.
+ */
+void GameScene::initLevelTwo(){
+/*
+    // Adding cacti to level TWO
+    mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
+    mCacti->setPen(Qt::NoPen);
+    mCacti->setPos(0, mGroundLevel - 100);
+    const int xRange = (mMaxX - mMinX - 200) * 0.94;
+    for (int i = 0; i < 10; ++i) {
+        Cactus *c = new Cactus(mCacti);
+          c->setPos(mMinX + 300 + qrand() % xRange, mCacti->boundingRect().height() - c->boundingRect().height()/2);
+  //        c->setPos(mMinX + 200 + qrand() % xRange, mGroundLevel - c->boundingRect().height()/2);
+    }
+    this->addItem(mCacti);
+*/
+
+    // Adding cacti
+    mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
+    mCacti->setPen(Qt::NoPen);
+    mCacti->setPos(0, mGroundLevel - 100);
+    const int xRange = (mMaxX - mMinX - 200) * 0.94;
+    QList<int> lowerBound({int(mMinX) + 100, 517, 966, 1668, 2214, 2600, 3300, 4000});
+    QList<int> upperBound(             {360, 828, 1491,2015, 2600, 3090, 4000, xRange});
+    QList<int> numOfCacti({1,2,2,2,2,2,2,3});
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < numOfCacti[i]; j++){
+            Cactus *c = new Cactus(mCacti);
+            int temp = mGenerator.bounded(lowerBound[i], upperBound[i]);
+            c->setPos(temp, mCacti->boundingRect().height() - c->boundingRect().height()/2);
+            qDebug() << "Cactus: " << i << j <<temp;
+        }
+    }
+    this->addItem(mCacti);
+    // Setting the floor and holes for level ONE
+    mFloor = new QGraphicsRectItem(0,0,mFieldWidth,39);
+    mFloor->setPen(Qt::NoPen);
+    QList<int> notVisible({10,11,12,13, 22,23,24, 39,40,41,42, 55,56, 80,81,82,83});
+    int numOfTiles = mFieldWidth / 39;
+    for(int i = 0; i < numOfTiles; i++){
+        if (notVisible.contains(i)){
+            Floor *f_tile = new Floor(mFloor);
+            f_tile->setPos(i*39, mGroundLevel);
+            f_tile->setOpacity(0);
+            f_tile->setVisible(false);
+        }
+        else{
+            Floor *f_tile = new Floor(mFloor);
+            f_tile->setPos(i*39, mGroundLevel);
+            f_tile->setVisible(true);
+        }
+    }
+    this->addItem(mFloor);
+
+    mCoins = new QGraphicsRectItem(0,0,mFieldWidth, mJumpHeight);
+    mCoins->setPen(Qt::NoPen);
+    mCoins->setPos(0, mGroundLevel - mJumpHeight);
+    for (int i = 0; i < 35; ++i) {
+        Coin *co = new Coin(mCoins);
+        co->setPos(mMinX + 200 + qrand() % xRange, qrand() % mJumpHeight - 39 - co->boundingRect().height());
+    }
+    addItem(mCoins);
+}
+
+void GameScene::startLevel(int lvl){
+    //mPlayer->setLive(true);
+    initPlayField();
+
+    switch (lvl) {
+        case 1:{
+            initLevelOne();
+            break;
+        }
+        case 2:{
+            initLevelTwo();
+            break;
+        }
+    }
 }
 
 void GameScene::addHorizontalInput(int input)
@@ -220,22 +326,6 @@ void GameScene::keyPressEvent(QKeyEvent *event)
     if (event->isAutoRepeat()) {
         return;
     }
-    /*
-    switch (event->key()) {
-        case Qt::Key_Right:
-            addHorizontalInput(1);
-            break;
-        case mLeftKey:
-            addHorizontalInput(-1);
-            break;
-        case Qt::Key_Space:
-            mVelocity = 3;
-            jump();
-            break;
-        default:
-            break;
-    }
-    */
     if(event->key() == mRightKey){
         addHorizontalInput(1);
     }
@@ -244,7 +334,8 @@ void GameScene::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == mJumpKey){
         mVelocity = 3;
-        jump();
+        if(!mPlayer->sinking())
+            jump();
     }
 }
 
@@ -253,21 +344,6 @@ void GameScene::keyReleaseEvent(QKeyEvent *event)
     if (event->isAutoRepeat()) {
         return;
     }
-    /*
-    switch (event->key()) {
-    case Qt::Key_Right:
-        addHorizontalInput(-1);
-        break;
-    case Qt::Key_Left:
-        addHorizontalInput(1);
-        break;
-    case Qt::Key_Space:
-        mVelocity = 3;
-        return;
-    default:
-        break;
-    }
-    */
     if(event->key() == mRightKey){
         addHorizontalInput(-1);
     }
@@ -285,8 +361,7 @@ void GameScene::keyReleaseEvent(QKeyEvent *event)
  */
 void GameScene::movePlayer()
 {
-
-    if(checkCollidingH() && mCollidingDirection == mPlayer->direction())
+    if((checkCollidingH() && mCollidingDirection == mPlayer->direction()) || !mPlayer->live())
         return;
 
     const int direction = mPlayer->direction();
@@ -324,6 +399,9 @@ void GameScene::movePlayer()
     applyParallax(ratio, mFloor);
     applyParallax(ratio, mTree);
     applyParallax(ratio, mCoins);
+
+    if(mCurrentX >= (mMaxX - 100))
+        emit youWon(mLevel, mPlayer->wealth());
 }
 
 
@@ -353,34 +431,59 @@ void GameScene::checkTimer()
  */
 void GameScene::resetScene()
 {
+    mTimerEn.stop();
     delete mCacti;
     delete mFloor;
     delete mCoins;
+//    delete mScor;
+
     mPlayer->setDirection(0);
-    mHorizontalInput=0;
+    mHorizontalInput = 0;
     mGroundLevel = 583 - 39;
-    mPlayer ->setPos(mMinX, mGroundLevel - mPlayer ->boundingRect().height() / 2);
+
+    mPlayer->setPos(mMinX, mGroundLevel - mPlayer ->boundingRect().height() / 2);
     mCurrentX = mMinX;
-    mCurrentY = mGroundLevel - mPlayer ->boundingRect().height() / 2;
-    mPlayer->setCurrentHealth(mPlayer->maxHealth());
+    mCurrentY = mGroundLevel - mPlayer ->boundingRect().height() / 2;    
     mPlayer->setOffset(-mPlayer->pixmap().width() / 2, -mPlayer->pixmap().height() / 2);
     QTransform t = mPlayer->transform();
-    mPlayer->setWealth(0);
     t.reset();
     mPlayer->setTransform(t);
-    mHealthBar->setValue(mPlayer->maxHealth());
     mColliding = false;
     mCollidingDirection = 1;
-
+    qDebug() << "Pozicija: " << mPlayer->pos();
     applyParallax(1, mBkg);
+}
 
-    initPlayField();
-    initLevelOne();
+/*! resets Player for new game
+ *
+ * used when the game is lost, so the coins and health are reset to initial values
+ */
+void GameScene::resetPlayer(){
+    mPlayer->setWealth(0);
+    mPlayer->setSinking(false);
+    emit coinGathered();
+    mPlayer->setCurrentHealth(mPlayer->maxHealth());
+    mHealthBar->setValue(mPlayer->maxHealth());
+    setLevel(1);
 }
 
 void GameScene::updateCoinCounter()
 {
     mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
+}
+
+void GameScene::moveScorpio()
+{
+    for(QGraphicsItem* scorpion : mScor->childItems()){
+        qDebug() << "Scorp";
+        Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion);
+        for(int i = 0; i < scorp->radius(); i++){
+            scorp->setPositionX(scorp->positionX() + scorp->velocity() * scorp->direction());
+            scorp->setPos(scorp->positionX(), scorp->positionY());
+            delay(20);
+        }
+        scorp->setDirection(scorp->direction()* (-1));
+    }
 }
 
 void GameScene::updateHealthBar(int)
@@ -494,9 +597,10 @@ void GameScene::setSlideFactor(const qreal &slideFactor)
 
     qreal groundY = (mMinY - mPlayer->boundingRect().height() / 2);
     qreal y = groundY - mSlideAnimation->currentValue().toReal() * mJumpHeight;
-    mCurrentX += 2;
+    mCurrentX += 1;
     mPlayer->setX(mCurrentX - mWorldShift);
     mPlayer->setY(y);
+
 }
 
 /*!
@@ -531,34 +635,45 @@ void GameScene::checkColliding()
 bool GameScene::checkCollidingH()
 {
     for(QGraphicsItem* item: collidingItems(mPlayer/*, Qt::ItemSelectionMode::IntersectsItemBoundingRect*/)) {
-        if (Coin *c = qgraphicsitem_cast<Coin*>(item)) {
+        if (Coin *c = dynamic_cast<Coin*>(item)) {  //
             if(!c->explosion()){
                 mPlayer->addCoin();
                 emit coinGathered();
                 c->explode();
             }
         }
-        if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {
-            if (!f->visible()){
+        else if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {
+            if (!f->visible() && mPlayer->live()){
                 sinking();
                 return true;
             }
         }
-        if (Cactus *c = qgraphicsitem_cast<Cactus*>(item)) {
+        else if (Cactus *c = dynamic_cast<Cactus*>(item)) {
             if(!mColliding && mPlayer->causeDamage(c->getDamage())){
                 mColliding = true;
                 mCollidingDirection = mPlayer->direction();
                 emit healthBarChanged(c->getDamage());
-                if(mPlayer->currentHealth() <= 0)
+                if(mPlayer->currentHealth() <= 0) {
+                    mPlayer->setLive(false);
                     emit youLost();
+                }
             }
             return true;
-        }
-        if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
-            delay(15);
+        }/*
+        else if(Scorpio *s = qgraphicsitem_cast<Scorpio*>(item)){
+            mPlayer->causeDamage(s->damage());
+            emit healthBarChanged(s->damage());
+            if(mPlayer->currentHealth() <= 0) {
+                mPlayer->setLive(false);
+                emit youLost();
+            }
+        }*/
+        /*
+        else if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
             emit youWon(mLevel, mPlayer->wealth());
             return true;
         }
+        */
     }
     if (!mColliding && mGroundLevel!=mMinY){
         mGroundLevel = mMinY;
@@ -576,24 +691,25 @@ bool GameScene::checkCollidingH()
 bool GameScene::checkCollidingV()
 {
     for(QGraphicsItem* item: collidingItems(mPlayer/*, Qt::ItemSelectionMode::IntersectsItemBoundingRect*/)) {
-        if (Coin *c = qgraphicsitem_cast<Coin*>(item)) {
+        if (Coin *c = dynamic_cast<Coin*>(item)) {
             if(!c->explosion()){
                 mPlayer->addCoin();
                 emit coinGathered();
                 c->explode();
             }
-        }
-        if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
+        }/*
+        else if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
             delay(15);
             emit youWon(mLevel, mPlayer->wealth());
             return true;
-        }
-        if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {
-            if (!f->visible()){
-                sinking();
+        }*/
+        else if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {
+            if (!f->visible() && mPlayer->live()){
+                sinking();    
             }
+            return true;
         }
-        if (Cactus *c = qgraphicsitem_cast<Cactus*>(item)) {
+        else if (Cactus *c = qgraphicsitem_cast<Cactus*>(item)) {
             if(!mColliding && mPlayer->causeDamage(c->getDamage())){
                 mGroundLevel = mMinY - c->boundingRect().height();
                 mColliding = true;
@@ -602,6 +718,7 @@ bool GameScene::checkCollidingV()
 
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0){
+                    mPlayer->setLive(false);
                     emit youLost();
                 }
 
@@ -623,8 +740,9 @@ bool GameScene::checkCollidingV()
  * \brief GameScene::sinking simulates sinking of camel
  */
 void GameScene::sinking(){
+    mPlayer->setLive(false);
     mBackBtn->setEnabled(false);
-
+    mPlayer->setSinking(true);
     // Rotacija
     mPlayer->setTransformationMode(Qt::SmoothTransformation);
     mPlayer->setOffset(10,-20);
@@ -633,13 +751,12 @@ void GameScene::sinking(){
         t.rotate(10);
         mPlayer->setTransform(t);
         mCurrentX = mCurrentX + mPlayer->direction() * 10;
-        mPlayer->setX(mCurrentX);
+        mPlayer->setX(mCurrentX - mWorldShift);
         mCurrentY = mCurrentY + 10;
         mPlayer->setY(mCurrentY++);
         delay(70);
     }
-    //mPlayer->setOffset(-mPlayer->pixmap().width() / 2, -mPlayer->pixmap().height() / 2);
-    // Propadanje
+
     while(mPlayer->y() - mPlayer->boundingRect().height() < mMinY){
         mPlayer->setY(mCurrentY++);
         mPlayer->causeDamage(mPlayer->currentHealth());
@@ -649,3 +766,6 @@ void GameScene::sinking(){
     emit youLost();
 }
 
+void GameScene::revivePlayer(){
+    mPlayer->setLive(true);
+}

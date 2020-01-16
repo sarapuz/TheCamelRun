@@ -23,11 +23,19 @@ class Player : public QGraphicsPixmapItem
     bool causeDamage(int);
     void addCoin();
 
+    bool sinking() const;
+    void setSinking(bool sinking);
+
+    bool live() const;
+    void setLive(bool live);
+
 private:
     int mDirection;
     int mCurrentHealth;
     int mMaxHealth;
     int mWealth;
+    bool mSinking;
+    bool mLive;
 };
 
 #endif // PLAYER_H

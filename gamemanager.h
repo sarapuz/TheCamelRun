@@ -7,7 +7,6 @@
 #include <QGraphicsView>
 #include <QSettings>
 
-#include "SceneStates.h"
 
 class MenuScene;
 class GameScene;
@@ -34,7 +33,6 @@ public:
     // proba*
 
     QGraphicsView mView;
-    SceneStates::State mCurrentState;
     MenuScene *mMenuScene;
     GameScene *mGameScene;
     SettingsScene *mSettingsScene;
@@ -47,12 +45,12 @@ public:
 
     void renderScene(QGraphicsScene*);
 
-    SceneStates::State currentState(){return mCurrentState;}
-    void setCurrentState(SceneStates::State newState){if (newState == mCurrentState) return; mCurrentState = newState;}
-
 signals:
    void currentStateChanged();
    void soundChanged();
+
+private slots:
+   void nextLevel(int);
 
 public slots:
     void startGame();

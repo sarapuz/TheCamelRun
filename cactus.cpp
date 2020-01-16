@@ -1,5 +1,7 @@
 #include "cactus.h"
+
 #include <QDebug>
+
 
 /*!
     \brief Cactus::Cactus(QGraphicsItem *parent)

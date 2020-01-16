@@ -1,11 +1,14 @@
 #include "player.h"
 
+
 Player::Player(QGraphicsItem *parent)
     : QGraphicsPixmapItem(parent),
       mDirection(0),
       mCurrentHealth(10),
       mMaxHealth(10),
-      mWealth(0)
+      mWealth(0),
+      mSinking(false),
+      mLive(true)
 {
     QPixmap pixmap(":/camel.png");
     setPixmap(pixmap);
@@ -74,6 +77,26 @@ int Player::wealth() const
 
 void Player::addCoin(){
     mWealth++;
+}
+
+bool Player::sinking() const
+{
+    return mSinking;
+}
+
+void Player::setSinking(bool sinking)
+{
+    mSinking = sinking;
+}
+
+bool Player::live() const
+{
+    return mLive;
+}
+
+void Player::setLive(bool live)
+{
+    mLive = live;
 }
 
 void Player::setWealth(int wealth)

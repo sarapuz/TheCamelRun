@@ -1,5 +1,6 @@
 #include "floor.h"
 
+
 Floor::Floor(QGraphicsItem *parent) :
     QGraphicsPixmapItem(parent)
 {

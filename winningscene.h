@@ -30,6 +30,7 @@ protected:
 signals:
     void backToMenu(); 
     void candidateForHighscore(int,QString,int);
+    void levelWon(int);
 
 public slots:
     void saveNameAndExit();

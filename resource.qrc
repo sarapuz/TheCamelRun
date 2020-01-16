@@ -15,5 +15,7 @@
         <file>soundON.ico</file>
         <file>soundOFF.ico</file>
         <file>DesertSound.wav</file>
+        <file>back.png</file>
+        <file>scorpio.png</file>
     </qresource>
 </RCC>

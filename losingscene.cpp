@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QFontDatabase>
 
+
 LosingScene::LosingScene(QObject *parent) : QGraphicsScene(parent)
 {
       setSceneRect(0, 0, 1248, 585);
@@ -25,13 +26,10 @@ LosingScene::LosingScene(QObject *parent) : QGraphicsScene(parent)
 
 void LosingScene::keyPressEvent(QKeyEvent *event)
 {
-
     if (event->isAutoRepeat()) {
         return;
     }
     if (event->key() == Qt::Key_Q) {
         emit backToMenu();
     }
-
-//    emit backToMenu();
 }
