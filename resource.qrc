@@ -17,5 +17,6 @@
         <file>DesertSound.wav</file>
         <file>back.png</file>
         <file>scorpio.png</file>
+        <file>reset.png</file>
     </qresource>
 </RCC>

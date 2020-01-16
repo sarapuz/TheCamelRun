@@ -26,7 +26,6 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
         settings.setValue("JumpKey", "Key_Space");
 
         QList<QString> score({"No name", "0"});
-        settings.setValue("Lvl1_1", QVariant(score));
         QString settingsAttribute;
         for(int i = 1; i < 3; i++){
             for(int j = 1; j < 6; j++){
@@ -66,6 +65,10 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
     // <SETTINGS: Turning on and off sound by clicking button in Settings scene
     connect(mSettingsScene->mSoundBtn, SIGNAL(clicked()), this, SLOT(changeSoundMode()));
     // >
+
+    // HIGHSCORE: Reseting hgihscores on press of a button
+    connect(mHighscoreScene->mResetBtn, SIGNAL(clicked()), mHighscoreScene, SLOT(resetTables()));
+    //>
 
     // <PLAYER: Updating player attributes such as coins and health
     connect(mGameScene, SIGNAL(healthBarChanged(int)), mGameScene, SLOT(updateHealthBar(int)));

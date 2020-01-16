@@ -216,8 +216,8 @@ void GameScene::initLevelOne(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 517, 966, 1668, 2200, 3300, 4000});
-    QList<int> upperBound({330, 828, 1491, 2200, 3090, 4000, xRange});
+    QList<int> lowerBound({int(mMinX) + 100, 587, 966, 1668, 2200, 3300, 4000});
+    QList<int> upperBound({330, 788, 1491, 2200, 3090, 4000, xRange});
     QList<int> numOfCacti({1,1,2,2,3,2, 1});
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){

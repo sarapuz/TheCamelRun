@@ -33,10 +33,14 @@ public:
     QTableWidget *mLv1Tb;
     QTableWidget *mLv2Tb;
 
+    QLabel *mResetLb;
+    QPushButton *mResetBtn;
+
     void updateHighscore();
 
 public slots:
     void updateTables(int lvl, QString name, int score);
+    void resetTables();
 };
 
 #endif // HIGHSCORESCENE_H

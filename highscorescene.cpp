@@ -107,7 +107,18 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       mLv1Tb->setFocusPolicy(Qt::NoFocus);
       mLv2Tb->setFocusPolicy(Qt::NoFocus);
 
+      mResetLb = new QLabel();
+      fontFont.setPointSize(15);
+      mResetLb->setText("Reseting scores");
+      mResetLb->setFont(fontFont);
+      mResetLb->setAttribute(Qt::WA_TranslucentBackground);
+      mResetLb->setGeometry(QRect(this->width()/2 - 150, height() -  155, 300,100));
+      mResetLb->setAlignment(Qt::AlignCenter);
 
+      mResetBtn = new QPushButton();
+      mResetBtn->setStyleSheet("border-image: url(://reset.png);");
+      mResetBtn->setAttribute(Qt::WA_TranslucentBackground);
+      mResetBtn->setGeometry(this->width()/2 - 30, height() -  180, 60,60);
 
       // QTableWidget::
 
@@ -118,6 +129,8 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       addWidget(mLv2Tb);
       addWidget(mHeadingLb);
       addWidget(mBackBtn);
+      addWidget(mResetLb);
+      addWidget(mResetBtn);
 }
 
 void HighscoreScene::updateHighscore()
@@ -185,4 +198,16 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
             }
         }
     }
+}
+
+void HighscoreScene::resetTables()
+{
+    // reseting list and calling update highscore
+    mScoreLv1.clear();
+    mScoreLv2.clear();
+    for (int i = 0; i < 5; i++ ){
+        mScoreLv1.append(QPair<QString,int>("no name", 0));
+        mScoreLv2.append(QPair<QString,int>("no name", 0));
+    }
+    updateHighscore();
 }
