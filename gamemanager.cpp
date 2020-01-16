@@ -54,7 +54,7 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
     // Game scene also needs to reset the scene and player.
     connect(mSettingsScene->mBackBtn, &QPushButton::clicked, [this]() {mSettingsScene->resetButtons(); startMenu();});
     connect(mHighscoreScene->mBackBtn, SIGNAL(clicked()), this, SLOT(startMenu()));
-    connect(mGameScene->mBackBtn, &QPushButton::clicked, [this](){mGameScene->setLevel(0); nextLevel(mGameScene->level()); startMenu();});
+    connect(mGameScene->mBackBtn, &QPushButton::clicked, [this](){mGameScene->killPlayer(); mGameScene->setLevel(0); nextLevel(mGameScene->level()); startMenu();});
     //>
 
     // <SETTINGS: Changing  keyboard controls
@@ -112,16 +112,17 @@ void GameManager::nextLevel(int level)
     mGameScene->resetScene();
     switch(level){
         case 0:{
-        mGameScene->resetPlayer();
-        mGameScene->setLevel(1);
-        mGameScene->startLevel(1);
-        renderScene(mGameScene);
-        break;
+            mGameScene->resetPlayer();
+            mGameScene->setLevel(1);
+            mGameScene->startLevel(1);
+            break;
         }
         case 1:{
             mGameScene->setLevel(2);
             mGameScene->startLevel(2);
+            mGameScene->revivePlayer();
             renderScene(mGameScene);
+            mGameScene->mTimerEn.start();
             break;
         }
         case 2:{
@@ -138,6 +139,7 @@ void GameManager::startGame()
 {
     mGameScene->revivePlayer();
     renderScene(mGameScene);
+    mGameScene->mTimerEn.start();
 }
 
 void GameManager::startSettings()

@@ -37,6 +37,7 @@ public:
 
     BackgroundItem *mBkg;
     QPushButton *mBackBtn;
+    QTimer mTimerEn;
 
     void initPlayField();
     qreal jumpFactor() const;
@@ -73,6 +74,7 @@ public slots:
     void resetScene();
     void resetPlayer();
     void startLevel(int lvl);
+    void killPlayer();
 
 signals:
     void jumpFactorChanged(qreal);
@@ -91,18 +93,16 @@ private:
     QGraphicsRectItem *mTree;
     QGraphicsRectItem *mCoins;
 
-    QGraphicsRectItem *mScor;
-    Scorpio *mEnemy;
-    QList<Scorpio*> mScorpios;
+    QGraphicsRectItem *mScorpios;
 
     QProgressBar *mHealthBar;
     QGraphicsEllipseItem *mCoinsPicture;
     QLabel *mCoinsLabel;
+    QLabel *mLvlLabel;
 
     QRandomGenerator mGenerator;
     int mLevel;
     QTimer mTimer;
-    QTimer mTimerEn;
     int mVelocity;
     int mWorldShift;
     qreal mMinX, mMaxX, mMinY;

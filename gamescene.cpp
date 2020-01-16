@@ -44,10 +44,7 @@ GameScene::GameScene(QObject *parent) :
     mMinY = mMinY - 39;
     mTimer.setInterval(10);
     connect(&mTimer, &QTimer::timeout, this, &GameScene::movePlayer);
-    mTimerEn.setInterval(100);
-
-//    connect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
-
+    mTimerEn.setInterval(10);
 
     mBackBtn = new QPushButton();
     mBkg = new BackgroundItem(QPixmap("://platformer_bkg.jpg"));
@@ -56,6 +53,7 @@ GameScene::GameScene(QObject *parent) :
     mHealthBar = new QProgressBar();
     mCoinsLabel = new QLabel();
     mCoinsPicture = new QGraphicsEllipseItem();
+    mLvlLabel = new QLabel();
 
     // <Set background
     setSceneRect(0, 0, 1248, 585);
@@ -80,7 +78,7 @@ GameScene::GameScene(QObject *parent) :
     // <Set coins label: presents number of coins acquired
     fontFont.setPointSize(30);
     mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
-    mCoinsLabel->setGeometry(QRect(55,15,100,50));
+    mCoinsLabel->setGeometry(QRect(55,15,120,50));
     mCoinsLabel->setAttribute(Qt::WA_TranslucentBackground);
     mCoinsLabel->setFont(fontFont);
     mCoinsLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -94,6 +92,14 @@ GameScene::GameScene(QObject *parent) :
     mCoinsPicture->setPos(5,10);
     this->addItem(mCoinsPicture);
     //>
+
+    // <Create label which indicates which level is in progress
+    mLvlLabel->setText(QString("Lvl %1").arg(mLevel));
+    mLvlLabel->setFont(fontFont);
+    mLvlLabel->setGeometry(QRect(width()/2, 15, 150, 50));
+    mLvlLabel->setAttribute(Qt::WA_TranslucentBackground);
+    addWidget(mLvlLabel);
+    // >
 
     // <Create back button
     fontFont.setPointSize(20);
@@ -162,7 +168,7 @@ void GameScene::initPlayField()
     Tree *t= new Tree(mTree);
     t->setPos(mMaxX - t->boundingRect().width(), 0);
     // >
-
+    mLvlLabel->setText(QString("Lvl %1").arg(mLevel));
     mBackBtn->setEnabled(true);
 }
 
@@ -172,16 +178,19 @@ void GameScene::initPlayField()
 * GameScene::initLevelOne initiates floor holes, cacti and enemies.
  */
 void GameScene::initLevelOne(){
-/*
-    mScor = new QGraphicsRectItem(0,0,mFieldWidth,60);
-    mScor->setPen(Qt::NoPen);
-    for(int i = 0; i < 2; i++){
-        Scorpio *s = new Scorpio(150 * (i+3), 100 *(i+1), mScor);
+
+
+    // Setting scorpions
+    mScorpios = new QGraphicsRectItem(0,0,mFieldWidth,60);
+    mScorpios->setPen(Qt::NoPen);
+    QList<int> scorpioPos({1150, 2050, 3300, 3900});
+    for(int i = 0; i < 4; i++){
+        Scorpio *s = new Scorpio(scorpioPos[i], 200 *(i+1), mScorpios);
         s->setPos(s->positionX(),s->positionY());
     }
-    addItem(mScor);
-    mTimerEn.start();
-  */
+    addItem(mScorpios);
+    connect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
+
     // Setting the floor and holes
     mFloor = new QGraphicsRectItem(0,0,mFieldWidth,39);
     mFloor->setPen(Qt::NoPen);
@@ -202,21 +211,19 @@ void GameScene::initLevelOne(){
     }
     this->addItem(mFloor);
 
-
     // Adding cacti
     mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
     QList<int> lowerBound({int(mMinX) + 100, 517, 966, 1668, 2200, 3300, 4000});
-    QList<int> upperBound({360, 828, 1491, 2200, 3090, 4000, xRange});
+    QList<int> upperBound({330, 828, 1491, 2200, 3090, 4000, xRange});
     QList<int> numOfCacti({1,1,2,2,3,2, 1});
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
             Cactus *c = new Cactus(mCacti);
             int temp = mGenerator.bounded(lowerBound[i], upperBound[i]);
             c->setPos(temp, mCacti->boundingRect().height() - c->boundingRect().height()/2);
-            qDebug() << "Cactus: " << i << j <<temp;
         }
     }
     this->addItem(mCacti);
@@ -237,19 +244,17 @@ void GameScene::initLevelOne(){
 * GameScene::initLevelOne initiates floor holes, cacti and enemies.
  */
 void GameScene::initLevelTwo(){
-/*
-    // Adding cacti to level TWO
-    mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
-    mCacti->setPen(Qt::NoPen);
-    mCacti->setPos(0, mGroundLevel - 100);
-    const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    for (int i = 0; i < 10; ++i) {
-        Cactus *c = new Cactus(mCacti);
-          c->setPos(mMinX + 300 + qrand() % xRange, mCacti->boundingRect().height() - c->boundingRect().height()/2);
-  //        c->setPos(mMinX + 200 + qrand() % xRange, mGroundLevel - c->boundingRect().height()/2);
+
+    mScorpios = new QGraphicsRectItem(0,0,mFieldWidth,60);
+    mScorpios->setPen(Qt::NoPen);
+    QList<int> scorpioPos({1050,1700,2650,3500,3900});
+    for(int i = 0; i < scorpioPos.length(); i++){
+        Scorpio *s = new Scorpio(scorpioPos[i], 85 *(i+1), mScorpios);
+        s->setPos(s->positionX(),s->positionY());
+        s->setDamage(2);
     }
-    this->addItem(mCacti);
-*/
+    addItem(mScorpios);
+
 
     // Adding cacti
     mCacti = new QGraphicsRectItem(0, 0, mFieldWidth, 100 );
@@ -257,14 +262,13 @@ void GameScene::initLevelTwo(){
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
     QList<int> lowerBound({int(mMinX) + 100, 517, 966, 1668, 2214, 2600, 3300, 4000});
-    QList<int> upperBound(             {360, 828, 1491,2015, 2600, 3090, 4000, xRange});
-    QList<int> numOfCacti({1,2,2,2,2,2,2,3});
+    QList<int> upperBound(             {330, 828, 1491,2015, 2600, 3090, 4000, xRange});
+    QList<int> numOfCacti({1,2,1,2,2,2,2,3});
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
             Cactus *c = new Cactus(mCacti);
             int temp = mGenerator.bounded(lowerBound[i], upperBound[i]);
             c->setPos(temp, mCacti->boundingRect().height() - c->boundingRect().height()/2);
-            qDebug() << "Cactus: " << i << j <<temp;
         }
     }
     this->addItem(mCacti);
@@ -399,9 +403,12 @@ void GameScene::movePlayer()
     applyParallax(ratio, mFloor);
     applyParallax(ratio, mTree);
     applyParallax(ratio, mCoins);
+    applyParallax(ratio, mScorpios);
 
-    if(mCurrentX >= (mMaxX - 100))
+    if(mCurrentX >= (mMaxX - 100)){
+        mPlayer->setLive(false);
         emit youWon(mLevel, mPlayer->wealth());
+    }
 }
 
 
@@ -431,12 +438,14 @@ void GameScene::checkTimer()
  */
 void GameScene::resetScene()
 {
+    mPlayer->setLive(false);
+
     mTimerEn.stop();
+
     delete mCacti;
     delete mFloor;
     delete mCoins;
-//    delete mScor;
-
+    delete mScorpios;
     mPlayer->setDirection(0);
     mHorizontalInput = 0;
     mGroundLevel = 583 - 39;
@@ -450,7 +459,6 @@ void GameScene::resetScene()
     mPlayer->setTransform(t);
     mColliding = false;
     mCollidingDirection = 1;
-    qDebug() << "Pozicija: " << mPlayer->pos();
     applyParallax(1, mBkg);
 }
 
@@ -459,8 +467,8 @@ void GameScene::resetScene()
  * used when the game is lost, so the coins and health are reset to initial values
  */
 void GameScene::resetPlayer(){
-    mPlayer->setWealth(0);
     mPlayer->setSinking(false);
+    mPlayer->setWealth(0);
     emit coinGathered();
     mPlayer->setCurrentHealth(mPlayer->maxHealth());
     mHealthBar->setValue(mPlayer->maxHealth());
@@ -471,25 +479,64 @@ void GameScene::updateCoinCounter()
 {
     mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
 }
-
+/*
 void GameScene::moveScorpio()
 {
-    for(QGraphicsItem* scorpion : mScor->childItems()){
-        qDebug() << "Scorp";
-        Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion);
-        for(int i = 0; i < scorp->radius(); i++){
-            scorp->setPositionX(scorp->positionX() + scorp->velocity() * scorp->direction());
-            scorp->setPos(scorp->positionX(), scorp->positionY());
-            delay(20);
+    if (!mPlayer->live())
+        return;
+    for(QGraphicsItem* scorpion : mScorpios->childItems()){
+        if (!mPlayer->live())
+            return;
+        if( Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion)) {
+
+            for(int i = 0; i < scorp->radius(); i++){
+                if (!mPlayer->live())
+                    return;
+                scorp->setPositionX(scorp->positionX() + scorp->velocity() * scorp->direction());
+                if (!mPlayer->live())
+                    return;
+                scorp->setX(scorp->positionX());
+                delay(10);
+            }
+            scorp->setDirection(scorp->direction()* (-1));
         }
-        scorp->setDirection(scorp->direction()* (-1));
     }
 }
+*/
+
+void GameScene::moveScorpio(){
+
+    for(int i = 0; i < 300; i++){
+        for(QGraphicsItem* scorpion : mScorpios->childItems()){
+            if (!mPlayer->live())
+                return;
+            if( Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion)) {
+                if (!mPlayer->live())
+                    return;
+                scorp->setPositionX(scorp->positionX() + scorp->velocity() * scorp->direction());
+                if (!mPlayer->live())
+                    return;
+                scorp->setX(scorp->positionX());
+            }
+        }
+        delay(10);
+    }
+
+    for(QGraphicsItem* scorpion : mScorpios->childItems()){
+        if (!mPlayer->live())
+            return;
+        if( Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion)) {
+            if (!mPlayer->live())
+                return;
+            scorp->setDirection(scorp->direction()* (-1));
+        }
+    }
+}
+
 
 void GameScene::updateHealthBar(int)
 {
     mHealthBar->setValue(mPlayer->currentHealth());
-    //mHealthBar->
 }
 
 void GameScene::changeLeftKey(int newKey)
@@ -549,7 +596,8 @@ void GameScene::jump()
     }    
 }
 
-void GameScene::slide(){
+void GameScene::slide()
+{
     if (QAbstractAnimation::Stopped == mSlideAnimation->state()) {
         mSlideAnimation->start();
     }
@@ -608,7 +656,8 @@ void GameScene::setSlideFactor(const qreal &slideFactor)
  * \param ratio is ratio of moved item between element and scene
  * \param item is item which is being moved
  */
-void GameScene::applyParallax(qreal ratio, QGraphicsItem* item) {
+void GameScene::applyParallax(qreal ratio, QGraphicsItem* item)
+{
     item->setX(- ratio * (item->boundingRect().width() - width()));
 }
 
@@ -642,7 +691,7 @@ bool GameScene::checkCollidingH()
                 c->explode();
             }
         }
-        else if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {
+        else if (Floor *f = dynamic_cast<Floor*>(item)) {
             if (!f->visible() && mPlayer->live()){
                 sinking();
                 return true;
@@ -655,6 +704,7 @@ bool GameScene::checkCollidingH()
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0) {
                     mPlayer->setLive(false);
+                    disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
                     emit youLost();
                 }
             }
@@ -719,9 +769,9 @@ bool GameScene::checkCollidingV()
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0){
                     mPlayer->setLive(false);
+                    disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
                     emit youLost();
                 }
-
             }
             return true;
         }
@@ -739,7 +789,8 @@ bool GameScene::checkCollidingV()
 /*!
  * \brief GameScene::sinking simulates sinking of camel
  */
-void GameScene::sinking(){
+void GameScene::sinking()
+{
     mPlayer->setLive(false);
     mBackBtn->setEnabled(false);
     mPlayer->setSinking(true);
@@ -763,9 +814,18 @@ void GameScene::sinking(){
         emit healthBarChanged(mPlayer->currentHealth());
         delay(15);
     }
+    disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
     emit youLost();
 }
 
-void GameScene::revivePlayer(){
+void GameScene::revivePlayer()
+{
     mPlayer->setLive(true);
+}
+
+void GameScene::killPlayer()
+{
+    mPlayer->setLive(false);
+    disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
+    delay(100);
 }
