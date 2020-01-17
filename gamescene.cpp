@@ -105,7 +105,7 @@ GameScene::GameScene(QObject *parent) :
 
     // <Create back button
     fontFont.setPointSize(20);
-    mBackBtn->setStyleSheet("border-image: url(://back.png);");
+    mBackBtn->setStyleSheet("border-image: url(://BackBtn.png);");
     mBackBtn->setFont(fontFont);
     mBackBtn->setGeometry(this->width() - 110, 15, 80,80);
     mBackBtn->setEnabled(true);

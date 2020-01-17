@@ -46,7 +46,7 @@ SettingsScene::SettingsScene(QObject *parent) : QGraphicsScene(parent)
       mSettingsLb->setAlignment(Qt::AlignTop | Qt::AlignCenter );
 
       mBackBtn = new QPushButton();
-      mBackBtn->setStyleSheet("border-image: url(://back.png);");
+      mBackBtn->setStyleSheet("border-image: url(://BackBtn.png);");
       mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
       mBackBtn->setGeometry(this->width() - 100, 15, 80,80);
 

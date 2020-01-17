@@ -14,9 +14,7 @@
         <file>soundON.ico</file>
         <file>soundOFF.ico</file>
         <file>DesertSound.wav</file>
-        <file>back.png</file>
         <file>scorpio.png</file>
-        <file>reset.png</file>
         <file>cactusLv2.png</file>
         <file>cactusLv3.png</file>
         <file>SignArrow.png</file>
@@ -24,5 +22,8 @@
         <file>bush.png</file>
         <file>grass.png</file>
         <file>CamelRun.png</file>
+        <file>BackBtn.png</file>
+        <file>ResetBtn.png</file>
+        <file>SubmitBtn.png</file>
     </qresource>
 </RCC>

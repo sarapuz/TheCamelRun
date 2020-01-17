@@ -19,7 +19,7 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       QFont fontFont(family, 25);
 
       mBackBtn = new QPushButton();
-      mBackBtn->setStyleSheet("border-image: url(://back.png);");
+      mBackBtn->setStyleSheet("border-image: url(://BackBtn.png);");
       mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
       mBackBtn->setGeometry(this->width() - 100, 15, 80,80);
 
@@ -112,13 +112,13 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       mResetLb->setText("Reseting scores");
       mResetLb->setFont(fontFont);
       mResetLb->setAttribute(Qt::WA_TranslucentBackground);
-      mResetLb->setGeometry(QRect(this->width()/2 - 150, height() -  155, 300,100));
+      mResetLb->setGeometry(QRect(this->width()/2 - 150, height() -  135, 300,100));
       mResetLb->setAlignment(Qt::AlignCenter);
 
       mResetBtn = new QPushButton();
-      mResetBtn->setStyleSheet("border-image: url(://reset.png);");
+      mResetBtn->setStyleSheet("border-image: url(://ResetBtn.png);");
       mResetBtn->setAttribute(Qt::WA_TranslucentBackground);
-      mResetBtn->setGeometry(this->width()/2 - 30, height() -  180, 60,60);
+      mResetBtn->setGeometry(this->width()/2 - 40, height() -  180, 80,80);
 
       // QTableWidget::
 
