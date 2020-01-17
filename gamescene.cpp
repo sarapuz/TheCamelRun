@@ -143,10 +143,6 @@ GameScene::GameScene(QObject *parent) :
     mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
 
     connect(mJumpAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
-    //connect(mSlideAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
-    //connect(&mTimerEn, &QTimer::timeout, this, &GameScene::checkCollidingH);
-    //connect(&mTimerEn, &QTimer::timeout, this, &GameScene::scorpioCollision);
-
 }
 
 

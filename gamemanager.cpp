@@ -44,50 +44,50 @@ GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
     mWinningScene = new WinningScene();
 
     // <MAIN MENU: Starting scenes such as Settings, Highscore and Game from the Menu scene
-    connect(mMenuScene->mStartBtn, &QPushButton::clicked, [this](){startGame();});
-    connect(mMenuScene->mSettingsBtn, SIGNAL(clicked()), this, SLOT(startSettings()));
-    connect(mMenuScene->mHighBtn, SIGNAL(clicked()), this, SLOT(startHighscore()));
+    connect(mMenuScene->mStartBtn, &QPushButton::clicked, this, &GameManager::startGame);
+    connect(mMenuScene->mSettingsBtn, &QPushButton::clicked, this, &GameManager::startSettings);
+    connect(mMenuScene->mHighBtn, &QPushButton::clicked, this, &GameManager::startHighscore);
     //>
 
     // <BACK: Returning back to main menu from settings, highscore and game scene.
     // Game scene also needs to reset the scene and player.
     connect(mSettingsScene->mBackBtn, &QPushButton::clicked, [this]() {mSettingsScene->resetButtons(); startMenu();});
-    connect(mHighscoreScene->mBackBtn, SIGNAL(clicked()), this, SLOT(startMenu()));
+    connect(mHighscoreScene->mBackBtn, &QPushButton::clicked, this, &GameManager::startMenu);
     connect(mGameScene->mBackBtn, &QPushButton::clicked, [this](){mGameScene->killPlayer(); mGameScene->setLevel(0); nextLevel(mGameScene->level()); startMenu();});
     //>
 
     // <SETTINGS: Changing  keyboard controls
-    connect(mSettingsScene, SIGNAL(leftKeyChanged(int)), mGameScene, SLOT(changeLeftKey(int)));
-    connect(mSettingsScene, SIGNAL(rightKeyChanged(int)), mGameScene, SLOT(changeRightKey(int)));
-    connect(mSettingsScene, SIGNAL(jumpKeyChanged(int)), mGameScene, SLOT(changeJumpKey(int)));
+    connect(mSettingsScene, &SettingsScene::leftKeyChanged, mGameScene, &GameScene::changeLeftKey);
+    connect(mSettingsScene, &SettingsScene::rightKeyChanged, mGameScene, &GameScene::changeRightKey);
+    connect(mSettingsScene, &SettingsScene::jumpKeyChanged, mGameScene, &GameScene::changeJumpKey);
     // >
 
     // <SETTINGS: Turning on and off sound by clicking button in Settings scene
-    connect(mSettingsScene->mSoundBtn, SIGNAL(clicked()), this, SLOT(changeSoundMode()));
+    connect(mSettingsScene->mSoundBtn, &QPushButton::clicked, this, &GameManager::changeSoundMode);
     // >
 
     // HIGHSCORE: Reseting hgihscores on press of a button
-    connect(mHighscoreScene->mResetBtn, SIGNAL(clicked()), mHighscoreScene, SLOT(resetTables()));
+    connect(mHighscoreScene->mResetBtn, &QPushButton::clicked, mHighscoreScene, &HighscoreScene::resetTables);
     //>
 
     // <PLAYER: Updating player attributes such as coins and health
-    connect(mGameScene, SIGNAL(healthBarChanged(int)), mGameScene, SLOT(updateHealthBar(int)));
-    connect(mGameScene, SIGNAL(coinGathered()), mGameScene, SLOT(updateCoinCounter()));
+    connect(mGameScene, &GameScene::healthBarChanged, mGameScene, &GameScene::updateHealthBar);
+    connect(mGameScene, &GameScene::coinGathered, mGameScene, &GameScene::updateCoinCounter);
     // >
 
     // <LOSING: When player loses game (helathbar drops to zero) youLost() signal is emitted
     // startYouLost is triggered - which then resets both Scene and Player and renders LosingScene
     // from Losing Scene signal backToMenu() triggers rendering of Main Menu
-    connect(mGameScene, SIGNAL(youLost()), this, SLOT(startYouLost()));
-    connect(mLosingScene, SIGNAL(backToMenu()), this, SLOT(startMenu()));
+    connect(mGameScene, &GameScene::youLost, this, &GameManager::startYouLost);
+    connect(mLosingScene, &LosingScene::backToMenu, this, &GameManager::startMenu);
     //>
 
     // <WINNING: When player  passes a level, a winning screen renders (signal youWon triggers slot startYouWon)
     // Player then writes his name and confirms with button click - signal! this signal is processed with slot updateTables
     // And next level is set (level 1 or 2, depending on current level).
-    connect(mGameScene, SIGNAL(youWon(int,int)), this, SLOT(startYouWon(int,int)));
-    connect(mWinningScene, SIGNAL(candidateForHighscore(int,QString,int)), mHighscoreScene, SLOT(updateTables(int,QString,int)));
-    connect(mWinningScene, SIGNAL(levelWon(int)), this, SLOT(nextLevel(int)));
+    connect(mGameScene, &GameScene::youWon, this, &GameManager::startYouWon);
+    connect(mWinningScene, &WinningScene::candidateForHighscore, mHighscoreScene, &HighscoreScene::updateTables);
+    connect(mWinningScene, &WinningScene::levelWon, this, &GameManager::nextLevel);
     //>
 
     mSound = new QSound("://DesertSound.wav");

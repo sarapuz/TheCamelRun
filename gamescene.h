@@ -63,11 +63,11 @@ protected:
 private slots:
     void movePlayer();
     void checkTimer();
-    void updateCoinCounter();
     void moveScorpio();
 
 public slots:
     void updateHealthBar(int);
+    void updateCoinCounter();
     void changeLeftKey(int);
     void changeRightKey(int);
     void changeJumpKey(int);
