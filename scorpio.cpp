@@ -1,4 +1,5 @@
 #include "scorpio.h"
+#include "player.h"
 
 #include <QDebug>
 
@@ -95,4 +96,14 @@ int Scorpio::damage() const
 void Scorpio::setDamage(int damage)
 {
     mDamage = damage;
+}
+
+bool Scorpio::checkCollision()
+{
+    for(QGraphicsItem* item: collidingItems()) {
+        if(Player *p = dynamic_cast<Player*>(item)){
+            return true;
+        }
+    }
+    return false;
 }

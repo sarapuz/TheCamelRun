@@ -117,6 +117,7 @@ private:
     int mJumpHeight;
     bool mColliding;
     int mCollidingDirection;
+    bool mScorpDamage;
 
     Qt::Key mLeftKey;
     Qt::Key mRightKey;
@@ -127,6 +128,7 @@ private:
     void addHorizontalInput(int input);
     void applyParallax(qreal ratio, QGraphicsItem *item);
 
+    void scorpioCollision();
     void checkColliding();
     bool checkCollidingH();
     bool checkCollidingV();

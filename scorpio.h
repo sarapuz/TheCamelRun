@@ -35,6 +35,9 @@ public:
     int damage() const;
     void setDamage(int damage);
 
+    bool checkCollision();
+
+
 private:
     QTimer mTimer;
     int mVelocity;

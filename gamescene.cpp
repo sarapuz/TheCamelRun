@@ -36,6 +36,7 @@ GameScene::GameScene(QObject *parent) :
     mJumpHeight(180),
     mColliding(false),
     mCollidingDirection(0),
+    mScorpDamage(false),
     mLeftKey(Qt::Key_Left),
     mRightKey(Qt::Key_Right),
     mJumpKey(Qt::Key_Space)
@@ -142,7 +143,10 @@ GameScene::GameScene(QObject *parent) :
     mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
 
     connect(mJumpAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
-    connect(mSlideAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
+    //connect(mSlideAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
+    //connect(&mTimerEn, &QTimer::timeout, this, &GameScene::checkCollidingH);
+    //connect(&mTimerEn, &QTimer::timeout, this, &GameScene::scorpioCollision);
+
 }
 
 
@@ -483,49 +487,25 @@ void GameScene::updateCoinCounter()
 {
     mCoinsLabel->setText(QString("x %1").arg(mPlayer->wealth()));
 }
-/*Cac
-void GameScene::moveScorpio()
-{
-    if (!mPlayer->live())
-        return;
-    for(QGraphicsItem* scorpion : mScorpios->childItems()){
-        if (!mPlayer->live())
-            return;
-        if( Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion)) {
-
-            for(int i = 0; i < scorp->radius(); i++){
-                if (!mPlayer->live())
-                    return;
-                scorp->setPositionX(scorp->positionX() + scorp->velocity() * scorp->direction());
-                if (!mPlayer->live())
-                    return;
-                scorp->setX(scorp->positionX());
-                delay(10);
-            }
-            scorp->setDirection(scorp->direction()* (-1));
-        }
-    }
-}
-*/
 
 void GameScene::moveScorpio(){
 
-    for(int i = 0; i < 300; i++){
+    for(int i = 0; i < 100; i++){
         for(QGraphicsItem* scorpion : mScorpios->childItems()){
             if (!mPlayer->live())
                 return;
             if( Scorpio *scorp = qgraphicsitem_cast<Scorpio*>(scorpion)) {
                 if (!mPlayer->live())
                     return;
-                scorp->setPositionX(scorp->positionX() + scorp->velocity() * scorp->direction());
+                scorp->setPositionX(scorp->positionX() + 2*scorp->velocity() * scorp->direction());
                 if (!mPlayer->live())
                     return;
                 scorp->setX(scorp->positionX());
             }
+            delay(5);
         }
-        delay(10);
+    scorpioCollision();
     }
-
     for(QGraphicsItem* scorpion : mScorpios->childItems()){
         if (!mPlayer->live())
             return;
@@ -710,26 +690,13 @@ bool GameScene::checkCollidingH()
                 if(mPlayer->currentHealth() <= 0) {
                     mPlayer->setLive(false);
                     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
+                    qDebug() << "Cactus";
                     emit youLost();
                 }
             }
             return true;
-        }/*
-        else if(Scorpio *s = qgraphicsitem_cast<Scorpio*>(item)){
-            mPlayer->causeDamage(s->damage());
-            emit healthBarChanged(s->damage());
-            if(mPlayer->currentHealth() <= 0) {
-                mPlayer->setLive(false);
-                emit youLost();
-            }
-        }*/
-        /*
-        else if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
-            emit youWon(mLevel, mPlayer->wealth());
-            return true;
-        }
-        */
-    }
+        }}
+
     if (!mColliding && mGroundLevel!=mMinY){
         mGroundLevel = mMinY;
         mPlayer->setY(mGroundLevel - mPlayer ->boundingRect().height() / 2);
@@ -737,6 +704,25 @@ bool GameScene::checkCollidingH()
     mColliding = false;
     mCollidingDirection = 0;
     return false;
+}
+
+void GameScene::scorpioCollision()
+{
+    for(QGraphicsItem* item: collidingItems(mPlayer)) {
+        if(Scorpio *scorp = dynamic_cast<Scorpio*>(item)){
+            if(!mScorpDamage && mPlayer->causeDamage(scorp->damage())){
+                emit healthBarChanged(scorp->damage());
+                mScorpDamage = true;
+                if(mPlayer->currentHealth() <= 0) {
+                    mPlayer->setLive(false);
+                    qDebug() << "Scorpija";
+                    emit youLost();
+                }
+            }
+            return;
+        }
+    }
+    mScorpDamage = false;
 }
 
 /*!
@@ -752,19 +738,14 @@ bool GameScene::checkCollidingV()
                 emit coinGathered();
                 c->explode();
             }
-        }/*
-        else if(Tree *t = qgraphicsitem_cast<Tree*>(item)){
-            delay(15);
-            emit youWon(mLevel, mPlayer->wealth());
-            return true;
-        }*/
-        else if (Floor *f = qgraphicsitem_cast<Floor*>(item)) {
+        }
+        else if (Floor *f = dynamic_cast<Floor*>(item)) {
             if (!f->visible() && mPlayer->live()){
                 sinking();    
             }
             return true;
         }
-        else if (Cactus *c = qgraphicsitem_cast<Cactus*>(item)) {
+        else if (Cactus *c = dynamic_cast<Cactus*>(item)) {
             if(!mColliding && mPlayer->causeDamage(c->getDamage())){
                 mGroundLevel = mMinY - c->boundingRect().height();
                 mColliding = true;
@@ -775,12 +756,12 @@ bool GameScene::checkCollidingV()
                 if(mPlayer->currentHealth() <= 0){
                     mPlayer->setLive(false);
                     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
+                    qDebug() << "Cactus";
                     emit youLost();
                 }
             }
             return true;
         }
-
     }
     if (!mColliding){
         mGroundLevel = mMinY;
@@ -820,6 +801,7 @@ void GameScene::sinking()
         delay(15);
     }
     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
+    qDebug() << "sinking";
     emit youLost();
 }
 
