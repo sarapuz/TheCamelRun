@@ -51,6 +51,7 @@ GameScene::GameScene(QObject *parent) :
     mBkg = new BackgroundItem(QPixmap("://platformer_bkg.jpg"));
     mPlayer = new Player();
     mTree = new QGraphicsRectItem(0, 0, mFieldWidth, 300);
+    mRoadSigns = new QGraphicsRectItem(0,0,mFieldWidth, 300);
     mHealthBar = new QProgressBar();
     mCoinsLabel = new QLabel();
     mCoinsPicture = new QGraphicsEllipseItem();
@@ -113,7 +114,7 @@ GameScene::GameScene(QObject *parent) :
     //>
 
     // <Placing tree which represents end of level
-
+    this->addItem(mRoadSigns);
     this->addItem(mTree);
     this->addItem(mPlayer );
     //>
@@ -164,6 +165,26 @@ void GameScene::initPlayField()
     mCurrentX = mMinX;
     mCurrentY = mGroundLevel - mPlayer ->boundingRect().height() / 2;
     //>
+
+    // <Set road signs and bacground items
+    mRoadSigns->setPen(Qt::NoPen);
+    mRoadSigns->setPos(0, mGroundLevel);
+
+    BackgroundItem *arrowSign = new BackgroundItem(QPixmap(":/SignArrow.png"), mRoadSigns);
+    arrowSign->setPos(100, -arrowSign->boundingRect().height());
+
+    BackgroundItem *oasisBush = new BackgroundItem(QPixmap(":/bush.png"), mRoadSigns);
+    oasisBush->setPos(mMaxX - 2*oasisBush->boundingRect().width(), -oasisBush->boundingRect().height());
+    BackgroundItem *oasisBush1 = new BackgroundItem(QPixmap(":/bush.png"), mRoadSigns);
+    oasisBush1->setPos(mMaxX - oasisBush1->boundingRect().width(), -oasisBush1->boundingRect().height());
+
+    BackgroundItem *oasisGrass = new BackgroundItem(QPixmap(":/grass.png"), mRoadSigns);
+    oasisGrass->setPos(mMaxX - 2*oasisBush->boundingRect().width(), -oasisGrass->boundingRect().height());
+    BackgroundItem *oasisGrass1 = new BackgroundItem(QPixmap(":/grass.png"), mRoadSigns);
+    oasisGrass1->setPos(mMaxX - oasisBush->boundingRect().width(), -oasisGrass1->boundingRect().height());
+    BackgroundItem *oasisGrass2 = new BackgroundItem(QPixmap(":/grass.png"), mRoadSigns);
+    oasisGrass2->setPos(mMaxX - 20, -oasisGrass2->boundingRect().height());
+    // >
 
     // <Set position of tree
     mTree->setPen(Qt::NoPen);
@@ -265,8 +286,8 @@ void GameScene::initLevelTwo(){
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
     QList<int> lowerBound({int(mMinX) + 100, 527, 976, 1678, 2224, 2600, 3300, 4000});
-    QList<int> upperBound(             {310, 818, 1471,2005, 2600, 3090, 4000, xRange});
-    QList<int> numOfCacti({1,2,1,2,2,2,2,3});
+    QList<int> upperBound(             {290, 818, 1471,2005, 2600, 3090, 4000, xRange});
+    QList<int> numOfCacti({1,1,1,2,2,2,2,3});
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
             Cactus *c = new Cactus(mCacti, mGenerator.bounded(1,4));
@@ -408,6 +429,7 @@ void GameScene::movePlayer()
     applyParallax(ratio, mTree);
     applyParallax(ratio, mCoins);
     applyParallax(ratio, mScorpios);
+    applyParallax(ratio, mRoadSigns);
 
     if(mCurrentX >= (mMaxX - 100)){
         mPlayer->setLive(false);
@@ -686,7 +708,6 @@ bool GameScene::checkCollidingH()
                 if(mPlayer->currentHealth() <= 0) {
                     mPlayer->setLive(false);
                     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
-                    qDebug() << "Cactus";
                     emit youLost();
                 }
             }
@@ -711,7 +732,6 @@ void GameScene::scorpioCollision()
                 mScorpDamage = true;
                 if(mPlayer->currentHealth() <= 0) {
                     mPlayer->setLive(false);
-                    qDebug() << "Scorpija";
                     emit youLost();
                 }
             }
@@ -752,7 +772,6 @@ bool GameScene::checkCollidingV()
                 if(mPlayer->currentHealth() <= 0){
                     mPlayer->setLive(false);
                     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
-                    qDebug() << "Cactus";
                     emit youLost();
                 }
             }
@@ -797,7 +816,6 @@ void GameScene::sinking()
         delay(15);
     }
     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
-    qDebug() << "sinking";
     emit youLost();
 }
 

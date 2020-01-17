@@ -2,6 +2,7 @@
 #define MENUSCENE_H
 
 #include <QGraphicsScene>
+#include <QLabel>
 #include <QPushButton>
 
 class BackgroundItem;
@@ -16,6 +17,9 @@ public:
 
     BackgroundItem *mBkg;
     QPushButton *mStartBtn, *mSettingsBtn, *mHighBtn;
+
+    BackgroundItem *mLogo;
+    QLabel *mTitle;
 };
 
 #endif // MENUSCENE_H

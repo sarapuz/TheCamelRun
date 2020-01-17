@@ -92,8 +92,9 @@ private:
     QGraphicsRectItem *mFloor;
     QGraphicsRectItem *mTree;
     QGraphicsRectItem *mCoins;
-
     QGraphicsRectItem *mScorpios;
+
+    QGraphicsRectItem *mRoadSigns;
 
     QProgressBar *mHealthBar;
     QGraphicsEllipseItem *mCoinsPicture;

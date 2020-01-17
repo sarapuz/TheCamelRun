@@ -19,5 +19,10 @@
         <file>reset.png</file>
         <file>cactusLv2.png</file>
         <file>cactusLv3.png</file>
+        <file>SignArrow.png</file>
+        <file>Sign.png</file>
+        <file>bush.png</file>
+        <file>grass.png</file>
+        <file>CamelRun.png</file>
     </qresource>
 </RCC>
