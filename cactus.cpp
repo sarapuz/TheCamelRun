@@ -20,12 +20,12 @@ Cactus::Cactus(QGraphicsItem *parent, int level) :
         }
         case 2: {
             pixmapPath = ":/cactusLv2.png";
-            mDamage = 2;
+            mDamage = 1;
             break;
         }
         case 3:{
             pixmapPath = ":/cactusLv3.png";
-            mDamage = 3;
+            mDamage = 2;
             break;
         }
     }

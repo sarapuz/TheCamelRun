@@ -12,7 +12,7 @@ Player::Player(QGraphicsItem *parent)
 {
     QPixmap pixmap(":/camel.png");
     setPixmap(pixmap);
-    setOffset(-pixmap.width() / 2, -pixmap.height() / 2);
+    setOffset(-pixmap.width() / 3, -pixmap.height() / 2);
 }
 
 int Player::direction() const

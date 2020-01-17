@@ -140,6 +140,9 @@ GameScene::GameScene(QObject *parent) :
     mSlideAnimation->setEndValue(0);
     mSlideAnimation->setDuration(600);
     mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
+
+    connect(mJumpAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
+    connect(mSlideAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
 }
 
 
@@ -216,8 +219,8 @@ void GameScene::initLevelOne(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 587, 966, 1668, 2200, 3300, 4000});
-    QList<int> upperBound({330, 788, 1491, 2200, 3090, 4000, xRange});
+    QList<int> lowerBound({int(mMinX) + 100, 597, 996, 1678, 2200, 3300, 4000});
+    QList<int> upperBound({             330, 788, 1481, 2190, 3090, 4000, xRange});
     QList<int> numOfCacti({1,1,2,2,3,2, 1});
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
@@ -261,8 +264,8 @@ void GameScene::initLevelTwo(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 517, 966, 1668, 2214, 2600, 3300, 4000});
-    QList<int> upperBound(             {330, 828, 1491,2015, 2600, 3090, 4000, xRange});
+    QList<int> lowerBound({int(mMinX) + 100, 527, 976, 1678, 2224, 2600, 3300, 4000});
+    QList<int> upperBound(             {310, 818, 1471,2005, 2600, 3090, 4000, xRange});
     QList<int> numOfCacti({1,2,1,2,2,2,2,3});
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
@@ -338,8 +341,9 @@ void GameScene::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == mJumpKey){
         mVelocity = 3;
-        if(!mPlayer->sinking())
+        if(!mPlayer->sinking()){
             jump();
+        }
     }
 }
 
@@ -630,6 +634,7 @@ void GameScene::setJumpFactor(const qreal &jumpFactor)
 
     qreal groundY = (mGroundLevel - mPlayer->boundingRect().height() / 2);
     qreal y = groundY - mJumpAnimation->currentValue().toReal() * mJumpHeight;
+
     mPlayer->setY(y);
 }
 
