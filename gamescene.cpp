@@ -37,6 +37,7 @@ GameScene::GameScene(QObject *parent) :
     mColliding(false),
     mCollidingDirection(0),
     mScorpDamage(false),
+    mJumping(false),
     mLeftKey(Qt::Key_Left),
     mRightKey(Qt::Key_Right),
     mJumpKey(Qt::Key_Space)
@@ -143,6 +144,7 @@ GameScene::GameScene(QObject *parent) :
     mSlideAnimation->setDuration(600);
     mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
 
+    connect(mJumpAnimation, &QAbstractAnimation::finished, [this](){mJumping = false;});
     connect(mJumpAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
 }
 
@@ -240,7 +242,7 @@ void GameScene::initLevelOne(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 597, 996, 1678, 2200, 3300, 4000});
+    QList<int> lowerBound({int(mMinX) + 100, 617, 996, 1678, 2200, 3300, 4000});
     QList<int> upperBound({             330, 788, 1481, 2190, 3090, 4000, xRange});
     QList<int> numOfCacti({1,1,2,2,3,2, 1});
     for (int i = 0; i < 7; ++i) {
@@ -363,6 +365,7 @@ void GameScene::keyPressEvent(QKeyEvent *event)
     else if(event->key() == mJumpKey){
         mVelocity = 3;
         if(!mPlayer->sinking()){
+            mJumping = true;
             jump();
         }
     }
@@ -649,9 +652,36 @@ void GameScene::setSlideFactor(const qreal &slideFactor)
     qreal groundY = (mMinY - mPlayer->boundingRect().height() / 2);
     qreal y = groundY - mSlideAnimation->currentValue().toReal() * mJumpHeight;
     mCurrentX += 1;
+
+    const int shiftBorder = 450;
+    int rightShiftBorder = width() - shiftBorder;
+
+    const int visiblePlayerPos = mCurrentX - mWorldShift;
+    const int newWorldShiftRight = visiblePlayerPos - rightShiftBorder;
+    if (newWorldShiftRight > 0) {
+        mWorldShift += newWorldShiftRight;
+    }
+    const int newWorldShiftLeft = shiftBorder - visiblePlayerPos;
+    if (newWorldShiftLeft > 0) {
+        mWorldShift -= newWorldShiftLeft;
+    }
+    const int maxWorldShift = mFieldWidth - qRound(width());
+    mWorldShift = qBound(0, mWorldShift, maxWorldShift);
+
+
     mPlayer->setX(mCurrentX - mWorldShift);
     mPlayer->setY(y);
 
+    if (mPlayer->live()){
+        const qreal ratio = qreal(mWorldShift) / maxWorldShift;
+        applyParallax(ratio, mBkg);
+        applyParallax(ratio, mCacti);
+        applyParallax(ratio, mFloor);
+        applyParallax(ratio, mTree);
+        applyParallax(ratio, mCoins);
+        applyParallax(ratio, mScorpios);
+        applyParallax(ratio, mRoadSigns);
+    }
 }
 
 /*!
@@ -669,16 +699,6 @@ QPainterPath GameScene::shape() const
     return QPainterPath();
 }
 
-void GameScene::checkColliding()
-{
-    for(QGraphicsItem* item: collidingItems(mPlayer)) {
-        if (Cactus *c = qgraphicsitem_cast<Cactus*>(item)) {
-
-            if(mPlayer->causeDamage(c->getDamage()))
-                emit healthBarChanged(c->getDamage());
-        }
-    }
-}
 
 /*!
  * \brief GameScene::checkCollidingH checks horizontall collisions
@@ -687,6 +707,8 @@ void GameScene::checkColliding()
 bool GameScene::checkCollidingH()
 {
     for(QGraphicsItem* item: collidingItems(mPlayer/*, Qt::ItemSelectionMode::IntersectsItemBoundingRect*/)) {
+        if(!mPlayer->live())
+            return false;
         if (Coin *c = dynamic_cast<Coin*>(item)) {  //
             if(!c->explosion()){
                 mPlayer->addCoin();
@@ -701,6 +723,12 @@ bool GameScene::checkCollidingH()
             }
         }
         else if (Cactus *c = dynamic_cast<Cactus*>(item)) {
+            // When moving while jumping
+            // landing on cactus must result in sliding
+            if(mJumping){
+                checkCollidingV();
+                continue;
+            }
             if(!mColliding && mPlayer->causeDamage(c->getDamage())){
                 mColliding = true;
                 mCollidingDirection = mPlayer->direction();
@@ -766,7 +794,6 @@ bool GameScene::checkCollidingV()
                 mGroundLevel = mMinY - c->boundingRect().height();
                 mColliding = true;
                 // simulacija preskakanja!
-                slide();
 
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0){
@@ -774,6 +801,8 @@ bool GameScene::checkCollidingV()
                     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
                     emit youLost();
                 }
+                if(mPlayer->live())
+                    slide();
             }
             return true;
         }

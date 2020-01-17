@@ -119,6 +119,7 @@ private:
     bool mColliding;
     int mCollidingDirection;
     bool mScorpDamage;
+    bool mJumping;
 
     Qt::Key mLeftKey;
     Qt::Key mRightKey;
@@ -130,7 +131,6 @@ private:
     void applyParallax(qreal ratio, QGraphicsItem *item);
 
     void scorpioCollision();
-    void checkColliding();
     bool checkCollidingH();
     bool checkCollidingV();
     void sinking();
