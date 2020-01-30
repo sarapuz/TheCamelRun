@@ -16,7 +16,7 @@
 GameManager::GameManager(QWidget *parent) : QMainWindow(parent)
 {
     QCoreApplication::setOrganizationName("PMF");
-    QCoreApplication::setApplicationName("Cameeel");
+    QCoreApplication::setApplicationName("The Camel Run");
     QSettings settings;
     // <If settings are not yet set, initate values
     if(settings.allKeys().length() == 0){

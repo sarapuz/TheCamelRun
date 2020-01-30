@@ -16,7 +16,7 @@ LosingScene::LosingScene(QObject *parent) : QGraphicsScene(parent)
       QFont fontFont(family, 25);
 
       mLosingLb = new QLabel();
-      mLosingLb->setText("You've shorten the world for another camel! \n Press Q to continue.");
+      mLosingLb->setText("You have shorten the world for another camel! \n Press any key to continue.");
       mLosingLb->setFont(fontFont);
       mLosingLb->setAttribute(Qt::WA_TranslucentBackground);
       mLosingLb->setAlignment(Qt::AlignTop | Qt::AlignCenter );
@@ -26,10 +26,5 @@ LosingScene::LosingScene(QObject *parent) : QGraphicsScene(parent)
 
 void LosingScene::keyPressEvent(QKeyEvent *event)
 {
-    if (event->isAutoRepeat()) {
-        return;
-    }
-    if (event->key() == Qt::Key_Q) {
-        emit backToMenu();
-    }
+    emit backToMenu();
 }

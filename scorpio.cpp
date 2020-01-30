@@ -9,7 +9,7 @@ Scorpio::Scorpio(int position, int radius, QGraphicsItem *parent):
     mVelocity(1),
     mPositionY(0),
     mDirection(1),
-    mDamage(2)
+    mDamage(1)
 {
     mPositionX = position;
     mRadius = radius;

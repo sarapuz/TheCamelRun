@@ -15,28 +15,23 @@ class HighscoreScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-
     explicit HighscoreScene(QObject *parent = 0);
 
-    BackgroundItem *mBkg;
     QPushButton *mBackBtn;
-
-    // Mozda spremati i kao parove?
     QList<QPair<QString, int> > mScoreLv1;
     QList<QPair<QString, int> > mScoreLv2;
-
-    QLabel *mHeadingLb;
-
-    QLabel *mHeadingLv1Lb;
-    QLabel *mHeadingLv2Lb;
-
     QTableWidget *mLv1Tb;
     QTableWidget *mLv2Tb;
-
-    QLabel *mResetLb;
     QPushButton *mResetBtn;
 
     void updateHighscore();
+
+private:
+    BackgroundItem *mBkg;
+    QLabel *mHeadingLb;
+    QLabel *mHeadingLv1Lb;
+    QLabel *mHeadingLv2Lb;
+    QLabel *mResetLb;
 
 public slots:
     void updateTables(int lvl, QString name, int score);

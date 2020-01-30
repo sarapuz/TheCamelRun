@@ -18,7 +18,7 @@
 #include <QSettings>
 #include <QRandomGenerator>
 #include <QThreadPool>
-#include <QtConcurrent>
+
 
 GameScene::GameScene(QObject *parent) :
     QGraphicsScene(parent),
@@ -106,7 +106,7 @@ GameScene::GameScene(QObject *parent) :
 
     // <Create back button
     fontFont.setPointSize(20);
-    mBackBtn->setStyleSheet("border-image: url(://BackBtn.png);");
+    mBackBtn->setStyleSheet("QPushButton{border-image: url(://BackBtn.png);}\nQPushButton:hover{border-image: url(://BackBtnHv.png);}");
     mBackBtn->setFont(fontFont);
     mBackBtn->setGeometry(this->width() - 110, 15, 80,80);
     mBackBtn->setEnabled(true);
@@ -120,10 +120,6 @@ GameScene::GameScene(QObject *parent) :
     this->addItem(mPlayer );
     //>
 
-
-/*    initPlayField();
-    initLevelOne();
-    */
     startLevel(mLevel);
 
     // Animation for jumping
@@ -242,9 +238,9 @@ void GameScene::initLevelOne(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 617, 996, 1678, 2200, 3300, 4000});
-    QList<int> upperBound({             330, 788, 1481, 2190, 3090, 4000, xRange});
-    QList<int> numOfCacti({1,1,2,2,3,2, 1});
+    QList<int> lowerBound({int(mMinX) + 100, 637, 1006, 1708, 2200, 3300, 4000});
+    QList<int> upperBound({             290, 778, 1471, 2180, 3060, 4000, xRange});
+    QList<int> numOfCacti({1,0,1,1,2,2, 1});
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
             Cactus *c = new Cactus(mCacti, mGenerator.bounded(1,3));
@@ -287,8 +283,8 @@ void GameScene::initLevelTwo(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 527, 976, 1678, 2224, 2600, 3300, 4000});
-    QList<int> upperBound(             {290, 818, 1471,2005, 2600, 3090, 4000, xRange});
+    QList<int> lowerBound({int(mMinX) + 100, 547, 986, 1698, 2234, 2600, 3300, 4000});
+    QList<int> upperBound(             {280, 788, 1461, 1995, 2600, 3080, 4000, xRange});
     QList<int> numOfCacti({1,1,1,2,2,2,2,3});
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < numOfCacti[i]; j++){
@@ -356,6 +352,8 @@ void GameScene::keyPressEvent(QKeyEvent *event)
     if (event->isAutoRepeat()) {
         return;
     }
+
+
     if(event->key() == mRightKey){
         addHorizontalInput(1);
     }
@@ -459,7 +457,6 @@ void GameScene::checkTimer()
     } else if (!mTimer.isActive()) {
         mTimer.start();
     }
-
 }
 
 /*!
@@ -727,7 +724,7 @@ bool GameScene::checkCollidingH()
             // landing on cactus must result in sliding
             if(mJumping){
                 checkCollidingV();
-                continue;
+                return false;
             }
             if(!mColliding && mPlayer->causeDamage(c->getDamage())){
                 mColliding = true;
@@ -740,12 +737,14 @@ bool GameScene::checkCollidingH()
                 }
             }
             return true;
-        }}
+        }
+    }
 
     if (!mColliding && mGroundLevel!=mMinY){
         mGroundLevel = mMinY;
         mPlayer->setY(mGroundLevel - mPlayer ->boundingRect().height() / 2);
     }
+
     mColliding = false;
     mCollidingDirection = 0;
     return false;

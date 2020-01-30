@@ -6,7 +6,7 @@
 #include <QSettings>
 #include <QDebug>
 #include <QPair>
-
+#include <QMessageBox>
 
 HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
 {
@@ -19,7 +19,7 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       QFont fontFont(family, 25);
 
       mBackBtn = new QPushButton();
-      mBackBtn->setStyleSheet("border-image: url(://BackBtn.png);");
+      mBackBtn->setStyleSheet("QPushButton{border-image: url(://BackBtn.png);}\nQPushButton:hover{border-image: url(://BackBtnHv.png);}");
       mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
       mBackBtn->setGeometry(this->width() - 100, 15, 80,80);
 
@@ -116,7 +116,8 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       mResetLb->setAlignment(Qt::AlignCenter);
 
       mResetBtn = new QPushButton();
-      mResetBtn->setStyleSheet("border-image: url(://ResetBtn.png);");
+      mResetBtn->setStyleSheet("QPushButton{border-image: url(://ResetBtn.png);}\nQPushButton:hover{border-image: url(://ResetBtnHv.png);}");
+
       mResetBtn->setAttribute(Qt::WA_TranslucentBackground);
       mResetBtn->setGeometry(this->width()/2 - 40, height() -  180, 80,80);
 
@@ -177,7 +178,6 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
     if(lvl == 1){
         // provjeri je li score veci od dosadasnjih
         for(int i = 0; i < 5; i++){
-            //if ( i > settings.value(QString("Lvl1_%1").arg(i + 1), "").toStringList()[1].toInt()){
             if (score >= mScoreLv1[i].second){
                 mScoreLv1.insert(i, QPair<QString,int>(name, score));
                 mScoreLv1.pop_back();
@@ -186,7 +186,7 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
             }
         }
     }
-    else if(lvl = 2){
+    else if(lvl == 2){
         // provjeri je li score veci od dosadasnjih
         for(int i = 0; i < 5; i++){
             //if ( i > settings.value(QString("Lvl1_%1").arg(i + 1), "").toStringList()[1].toInt()){
@@ -202,6 +202,38 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
 
 void HighscoreScene::resetTables()
 {
+
+    QMessageBox msg;
+    //msg.setStyleSheet("QMessageBox{background-color: rgb(255,211,155);};");
+    msg.setIcon(QMessageBox::NoIcon);
+    msg.setText("Are you sure you want \n to reset all scores?");
+    msg.setStandardButtons(QMessageBox::Save | QMessageBox::No);
+    msg.setDefaultButton(QMessageBox::Save);
+    msg.button(QMessageBox::Save)->setObjectName("Yes");
+    msg.button(QMessageBox::No)->setObjectName("No");
+    int id = QFontDatabase::addApplicationFont("://NEWfONT2.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont fontFont(family, 15);
+
+    msg.setFont(fontFont);
+    msg.button(QMessageBox::Save)->setIcon(QIcon());
+    msg.button(QMessageBox::No)->setIcon(QIcon());
+    msg.button(QMessageBox::Save)->setText("");
+    msg.button(QMessageBox::No)->setText("");
+    msg.setStyleSheet("QPushButton#Yes{width: 60; height: 60; border-image: url(://SubmitBtn.png); }"
+                      "QPushButton:hover#Yes{width: 60; height: 60; border-image: url(://SubmitBtnHv.png);}"
+                      "QPushButton#No{width: 60; height: 60; border-image: url(://BackBtn.png); }"
+                      "QPushButton:hover#No{width: 60; height: 60; border-image: url(://BackBtnHv.png);}"
+                      "QMessageBox{background-color: rgb(229,243,255);}" );
+    switch (msg.exec()) {
+    case QMessageBox::Save :{
+        break;
+        }
+    case QMessageBox::No : {
+        return;
+        }
+    }
+
     // reseting list and calling update highscore
     mScoreLv1.clear();
     mScoreLv2.clear();

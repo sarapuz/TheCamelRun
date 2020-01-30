@@ -46,7 +46,7 @@ SettingsScene::SettingsScene(QObject *parent) : QGraphicsScene(parent)
       mSettingsLb->setAlignment(Qt::AlignTop | Qt::AlignCenter );
 
       mBackBtn = new QPushButton();
-      mBackBtn->setStyleSheet("border-image: url(://BackBtn.png);");
+      mBackBtn->setStyleSheet("QPushButton{border-image: url(://BackBtn.png);}\nQPushButton:hover{border-image: url(://BackBtnHv.png);}");
       mBackBtn->setAttribute(Qt::WA_TranslucentBackground);
       mBackBtn->setGeometry(this->width() - 100, 15, 80,80);
 
@@ -60,6 +60,7 @@ SettingsScene::SettingsScene(QObject *parent) : QGraphicsScene(parent)
       mSoundBtn = new QPushButton();
       setSoundIcon();
       mSoundBtn->setAttribute(Qt::WA_TranslucentBackground);
+      mSoundBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mSoundBtn->setGeometry(this->width()/2, this->height()/3+4,  30,30);
 
       mKeysLb = new QLabel();
@@ -91,14 +92,17 @@ SettingsScene::SettingsScene(QObject *parent) : QGraphicsScene(parent)
       QSettings settings;
       mLeftBtn = new QPushButton();
       mLeftBtn->setText(settings.value("LeftKey", "").toString());
+      mLeftBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mLeftBtn->setGeometry(QRect(this->width()/2 , (this->height()/3) + 110, 100, 36));
 
       mRightBtn = new QPushButton();
       mRightBtn->setText(settings.value("RightKey", "").toString());
+      mRightBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mRightBtn->setGeometry(QRect(this->width()/2 , (this->height()/3) + 150, 100, 36));
 
       mJumpBtn = new QPushButton();
       mJumpBtn->setText(settings.value("JumpKey", "").toString());
+      mJumpBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mJumpBtn->setGeometry(QRect(this->width()/2 , (this->height()/3) + 190, 100, 36));
 
 

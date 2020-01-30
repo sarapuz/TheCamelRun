@@ -19,7 +19,6 @@ class Scorpio;
   \class GameScene
   \brief The GameScene class hold the whole game.
 
-  This is long description.
 */
 class GameScene : public QGraphicsScene
 {
@@ -86,14 +85,12 @@ signals:
 
 
 private:
-
     Player* mPlayer;
     QGraphicsRectItem *mCacti;
     QGraphicsRectItem *mFloor;
     QGraphicsRectItem *mTree;
     QGraphicsRectItem *mCoins;
     QGraphicsRectItem *mScorpios;
-
     QGraphicsRectItem *mRoadSigns;
 
     QProgressBar *mHealthBar;
@@ -125,7 +122,6 @@ private:
     Qt::Key mRightKey;
     Qt::Key mJumpKey;
 
-
     void jump();
     void addHorizontalInput(int input);
     void applyParallax(qreal ratio, QGraphicsItem *item);
@@ -135,8 +131,6 @@ private:
     bool checkCollidingV();
     void sinking();
     void slide();
-
-
 };
 
 #endif // GAMESCENE_H

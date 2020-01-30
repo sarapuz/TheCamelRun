@@ -37,6 +37,7 @@ MenuScene::MenuScene(QObject *parent) :
       mStartBtn = new QPushButton();
       mStartBtn->setText("Start");
       mStartBtn->setFont(fontFont);
+      mStartBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mStartBtn->setGeometry(this->width()/2 - 100, this->height()/2 , 200, 50);
 /*
       mStartBtn->setStyleSheet(
@@ -54,11 +55,13 @@ MenuScene::MenuScene(QObject *parent) :
       mSettingsBtn = new QPushButton();
       mSettingsBtn->setText("Settings");
       mSettingsBtn->setFont(fontFont);
+      mSettingsBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mSettingsBtn->setGeometry(this->width()/2 - 100, this->height()/2 + 100, 200, 50);
 
       mHighBtn = new QPushButton();
       mHighBtn->setText("Highscore");
       mHighBtn->setFont(fontFont);
+      mHighBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mHighBtn->setGeometry(this->width()/2 - 100, this->height()/2 + 200, 200, 50);
 
       this->addWidget(mStartBtn);

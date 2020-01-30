@@ -36,7 +36,6 @@ Cactus::Cactus(QGraphicsItem *parent, int level) :
 
     mHeight = pixmap.height();
     mWidth = pixmap.width();
-
 }
 
 int Cactus::getHeight() const

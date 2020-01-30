@@ -14,24 +14,26 @@ class SettingsScene : public QGraphicsScene
 public:
     explicit SettingsScene(QObject *parent = 0);
 
-    BackgroundItem *mBkg;
-    QLabel *mSettingsLb;
     QPushButton *mBackBtn;
-
     QPushButton *mSoundBtn;
-    QLabel *mSoundLb;
-
-    QLabel *mKeysLb;
-    QLabel *mLeftLb;
-    QLabel *mRightLb;
-    QLabel *mJumpLb;
     QPushButton *mLeftBtn;
     QPushButton *mRightBtn;
     QPushButton *mJumpBtn;
 
-
     void setSoundIcon();
     void resetButtons();
+
+private:
+    BackgroundItem *mBkg;
+    QLabel *mSettingsLb;
+    QLabel *mSoundLb;
+    QLabel *mKeysLb;
+    QLabel *mLeftLb;
+    QLabel *mRightLb;
+    QLabel *mJumpLb;
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
     void changeLeftKey();
@@ -43,8 +45,6 @@ signals:
     void rightKeyChanged(int);
     void jumpKeyChanged(int);
 
-protected:
-    void keyPressEvent(QKeyEvent *event);
 
 };
 

@@ -9,15 +9,12 @@ class BackgroundItem;
 
 class MenuScene : public QGraphicsScene
 {
-    Q_OBJECT
-
 public:
-
     explicit MenuScene(QObject *parent = 0);
-
-    BackgroundItem *mBkg;
     QPushButton *mStartBtn, *mSettingsBtn, *mHighBtn;
 
+private:
+    BackgroundItem *mBkg;
     BackgroundItem *mLogo;
     QLabel *mTitle;
 };

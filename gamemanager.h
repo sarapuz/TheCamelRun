@@ -25,13 +25,11 @@ class QSound;
 class GameManager : public QMainWindow
 {
     Q_OBJECT
-    //Q_PROPERTY(SceneStates::State mCurrentState READ currentState  WRITE setCurrentState NOTIFY currentStateChanged)
 
 public:
     explicit GameManager(QWidget *parent = nullptr);
 
-    // proba*
-
+private:
     QGraphicsView mView;
     MenuScene *mMenuScene;
     GameScene *mGameScene;
@@ -39,9 +37,7 @@ public:
     HighscoreScene *mHighscoreScene;
     LosingScene *mLosingScene;
     WinningScene *mWinningScene;
-
     QSound *mSound;
-    //QMap<const SceneStates::State, QGraphicsScene> mSceneStates;
 
     void renderScene(QGraphicsScene*);
 
@@ -61,11 +57,6 @@ public slots:
     void startYouWon(int, int);
     void changeSoundMode();
     void playSound();
-
-private:
-    void loadSettigs();
-    void saveSettings();
-
 };
 
 #endif // GAMEMANAGER_H

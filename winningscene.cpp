@@ -42,7 +42,8 @@ WinningScene::WinningScene(QObject *parent) : QGraphicsScene(parent)
     addWidget(mNameLe);
 
     mConfirmBtn = new QPushButton();
-    mConfirmBtn->setStyleSheet("border-image: url(://SubmitBtn.png);");
+//    mConfirmBtn->setStyleSheet();
+    mConfirmBtn->setStyleSheet("QPushButton:hover{border-image: url(://SubmitBtnHv.png);}\nQPushButton{border-image: url(://SubmitBtn.png);}");
     mConfirmBtn->setAttribute(Qt::WA_TranslucentBackground);
     mConfirmBtn->setGeometry(QRect(this->width()/2 - 40 , 325, 80, 80));
     addWidget(mConfirmBtn);
@@ -57,5 +58,6 @@ void WinningScene::saveNameAndExit()
     emit candidateForHighscore(mTempLvl, mNameLe->text(), mTempCoins);
     emit levelWon(mTempLvl);
     mNameLe->setText("");
+    mNameLe->setFocus();
 }
 

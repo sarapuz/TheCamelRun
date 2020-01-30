@@ -25,5 +25,8 @@
         <file>BackBtn.png</file>
         <file>ResetBtn.png</file>
         <file>SubmitBtn.png</file>
+        <file>ResetBtnHv.png</file>
+        <file>SubmitBtnHv.png</file>
+        <file>BackBtnHv.png</file>
     </qresource>
 </RCC>
