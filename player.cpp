@@ -57,7 +57,6 @@ void Player::setMaxHealth(int maxHealth)
 
 bool Player::causeDamage(int damage)
 {
-
     if (damage >= mCurrentHealth){
         mCurrentHealth = 0;
         return true;

@@ -7,7 +7,6 @@
 
 class BackgroundItem;
 
-
 /*!
  * \brief The LosingScene class scene which is displayed upon losing.
  *
@@ -27,7 +26,6 @@ protected:
 
 signals:
     void backToMenu();
-
 };
 
 #endif // LOSINGSCENE_H

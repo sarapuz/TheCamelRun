@@ -9,7 +9,6 @@ public:
 
     enum { Type = UserType + 1 };
     int type() const;
-
 };
 
 #endif // PLATFORM_H

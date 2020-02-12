@@ -15,28 +15,14 @@ public:
 
     int positionX() const;
     void setPositionX(int positionX);
-
-    int radius() const;
-    void setRadius(int radius);
-
-
     int direction() const;
     void setDirection(int direction);
-
-    void moveScorpio(void);
-
     int velocity() const;
     void setVelocity(int velocity);
-    void advance(int advance);
-
     int positionY() const;
     void setPositionY(int positionY);
-
     int damage() const;
     void setDamage(int damage);
-
-    bool checkCollision();
-
 
 private:
     QTimer mTimer;

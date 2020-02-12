@@ -11,7 +11,6 @@ public:
     explicit Tree(QGraphicsItem *parent = 0);
     enum { Type = UserType + 3};
     int type() const;
-
 };
 
 #endif // TREE_H

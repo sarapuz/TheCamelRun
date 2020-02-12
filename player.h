@@ -10,22 +10,16 @@ class Player : public QGraphicsPixmapItem
 
     int direction() const;
     void setDirection(int direction);
-
     int currentHealth() const;
     void setCurrentHealth(int health);
-
     int maxHealth() const;
     void setMaxHealth(int maxHealth);
-
     int wealth() const;
     void setWealth(int wealth);
-
     bool causeDamage(int);
     void addCoin();
-
     bool sinking() const;
     void setSinking(bool sinking);
-
     bool live() const;
     void setLive(bool live);
 

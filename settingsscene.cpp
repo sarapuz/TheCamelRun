@@ -105,8 +105,6 @@ SettingsScene::SettingsScene(QObject *parent) : QGraphicsScene(parent)
       mJumpBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mJumpBtn->setGeometry(QRect(this->width()/2 , (this->height()/3) + 190, 100, 36));
 
-
-
       this->addWidget(mJumpBtn);
       this->addWidget(mRightBtn);
       this->addWidget(mLeftBtn);
@@ -176,6 +174,4 @@ void SettingsScene::keyPressEvent(QKeyEvent *event){
         mJumpBtn->setStyleSheet("");
         mJumpBtn->setText(settings.value("JumpKey", "").toString());
     }
-
-
 }

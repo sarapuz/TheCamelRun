@@ -22,10 +22,3 @@ void Floor::setVisible(bool visible)
 {
     mVisible = visible;
 }
-
-/*
-QPainterPath Floor::shape() const
-{
-    return QPainterPath();
-}
-*/

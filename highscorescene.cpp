@@ -31,7 +31,6 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       mHeadingLb->setGeometry(QRect(this->width()/2 - mHeadingLb->width()/2, height()/8, mHeadingLb->width(),40));
       mHeadingLb->setAlignment(Qt::AlignCenter);
 
-
       QSettings settings;
 
       // Heading of scores for Level 1
@@ -103,7 +102,6 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
       }
       mLv2Tb->resizeColumnsToContents();
 
-
       mLv1Tb->setFocusPolicy(Qt::NoFocus);
       mLv2Tb->setFocusPolicy(Qt::NoFocus);
 
@@ -120,8 +118,6 @@ HighscoreScene::HighscoreScene(QObject *parent) : QGraphicsScene(parent)
 
       mResetBtn->setAttribute(Qt::WA_TranslucentBackground);
       mResetBtn->setGeometry(this->width()/2 - 40, height() -  180, 80,80);
-
-      // QTableWidget::
 
       // Adding all widgets to scene
       addWidget(mHeadingLv1Lb);
@@ -145,7 +141,6 @@ void HighscoreScene::updateHighscore()
         settings.setValue(QString("Lvl2_%1").arg(j), QVariant(QList<QString>({mScoreLv2[j-1].first, QString("%1").arg(mScoreLv2[j-1].second)})));
     }
 
-
     for(int i = 0; i < 5; i++ ){
           mLv2Tb->setItem(i,0, new QTableWidgetItem(settings.value(QString("Lvl2_%1").arg(i+1), "").toStringList()[0]));
           mLv2Tb->setItem(i,1, new QTableWidgetItem(settings.value(QString("Lvl2_%1").arg(i+1), "").toStringList()[1]));
@@ -166,8 +161,6 @@ void HighscoreScene::updateHighscore()
           mScoreLv1.append(onePair);
     }
 
-
-
     mLv1Tb->resizeColumnsToContents();
     mLv2Tb->resizeColumnsToContents();
 }
@@ -176,7 +169,6 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
 {
     QSettings settings;
     if(lvl == 1){
-        // provjeri je li score veci od dosadasnjih
         for(int i = 0; i < 5; i++){
             if (score >= mScoreLv1[i].second){
                 mScoreLv1.insert(i, QPair<QString,int>(name, score));
@@ -187,9 +179,7 @@ void HighscoreScene::updateTables(int lvl, QString name, int score)
         }
     }
     else if(lvl == 2){
-        // provjeri je li score veci od dosadasnjih
         for(int i = 0; i < 5; i++){
-            //if ( i > settings.value(QString("Lvl1_%1").arg(i + 1), "").toStringList()[1].toInt()){
             if (score >= mScoreLv2[i].second){
                 mScoreLv2.insert(i, QPair<QString,int>(name, score));
                 mScoreLv2.pop_back();
@@ -204,7 +194,6 @@ void HighscoreScene::resetTables()
 {
 
     QMessageBox msg;
-    //msg.setStyleSheet("QMessageBox{background-color: rgb(255,211,155);};");
     msg.setIcon(QMessageBox::NoIcon);
     msg.setText("Are you sure you want \n to reset all scores?");
     msg.setStandardButtons(QMessageBox::Save | QMessageBox::No);
@@ -222,8 +211,8 @@ void HighscoreScene::resetTables()
     msg.button(QMessageBox::No)->setText("");
     msg.setStyleSheet("QPushButton#Yes{width: 60; height: 60; border-image: url(://SubmitBtn.png); }"
                       "QPushButton:hover#Yes{width: 60; height: 60; border-image: url(://SubmitBtnHv.png);}"
-                      "QPushButton#No{width: 60; height: 60; border-image: url(://BackBtn.png); }"
-                      "QPushButton:hover#No{width: 60; height: 60; border-image: url(://BackBtnHv.png);}"
+                      "QPushButton#No{width: 60; height: 60; border-image: url(://NoBtn.png); }"
+                      "QPushButton:hover#No{width: 60; height: 60; border-image: url(://NoBtnHv.png);}"
                       "QMessageBox{background-color: rgb(229,243,255);}" );
     switch (msg.exec()) {
     case QMessageBox::Save :{

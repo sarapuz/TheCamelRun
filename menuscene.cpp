@@ -30,8 +30,6 @@ MenuScene::MenuScene(QObject *parent) :
       mTitle->setFont(fontFont);
       addWidget(mTitle);
 
-      //fontFont.setPointSize(40);
-
       fontFont.setPointSize(25);
       // <Add buttons and label
       mStartBtn = new QPushButton();
@@ -39,19 +37,7 @@ MenuScene::MenuScene(QObject *parent) :
       mStartBtn->setFont(fontFont);
       mStartBtn->setStyleSheet("QPushButton:hover{background-color: rgb(255,211,155);}");
       mStartBtn->setGeometry(this->width()/2 - 100, this->height()/2 , 200, 50);
-/*
-      mStartBtn->setStyleSheet(
-                  "background: transparent;"
-                  "color: #000000;"
-                  "border: 8px solid #000000;"
-                  "border-radius: 5px;"
-                  );
-*/
-      // Focus - not Working
-      /*
-       * mStartBtn->setFocus();
-       * mStartBtn->setDefault(true);
-       */
+
       mSettingsBtn = new QPushButton();
       mSettingsBtn->setText("Settings");
       mSettingsBtn->setFont(fontFont);

@@ -17,15 +17,10 @@ public:
     BackgroundItem *mBkg;
     QLabel *mCaptionLb;
     QLabel *mMsgLb;
-
     QLineEdit *mNameLe;
     QPushButton *mConfirmBtn;
-
     int mTempLvl;
     int mTempCoins;
-
-protected:
-    //void keyPressEvent(QKeyEvent *event);
 
 signals:
     void backToMenu(); 

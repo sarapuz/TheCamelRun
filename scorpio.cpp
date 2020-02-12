@@ -1,8 +1,6 @@
 #include "scorpio.h"
 #include "player.h"
 
-#include <QDebug>
-
 
 Scorpio::Scorpio(int position, int radius, QGraphicsItem *parent):
     QGraphicsPixmapItem(parent),
@@ -34,16 +32,6 @@ void Scorpio::setPositionX(int positionX)
     mPositionX = positionX;
 }
 
-int Scorpio::radius() const
-{
-    return mRadius;
-}
-
-void Scorpio::setRadius(int radius)
-{
-    mRadius = radius;
-}
-
 int Scorpio::direction() const
 {
     return mDirection;
@@ -55,13 +43,6 @@ void Scorpio::setDirection(int direction)
 
 }
 
-void Scorpio::moveScorpio(void)
-{
-    setPositionX(mPositionX + mVelocity*mDirection);
-    setPos(positionX(), mPositionY);
-    return;
-}
-
 int Scorpio::velocity() const
 {
     return mVelocity;
@@ -70,12 +51,6 @@ int Scorpio::velocity() const
 void Scorpio::setVelocity(int velocity)
 {
     mVelocity = velocity;
-}
-
-void Scorpio::advance(int phase)
-{
-    setPositionX(mPositionX + mVelocity*mDirection);
-    setPos(positionX(), mPositionY);
 }
 
 int Scorpio::positionY() const
@@ -96,14 +71,4 @@ int Scorpio::damage() const
 void Scorpio::setDamage(int damage)
 {
     mDamage = damage;
-}
-
-bool Scorpio::checkCollision()
-{
-    for(QGraphicsItem* item: collidingItems()) {
-        if(Player *p = dynamic_cast<Player*>(item)){
-            return true;
-        }
-    }
-    return false;
 }

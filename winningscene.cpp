@@ -33,7 +33,6 @@ WinningScene::WinningScene(QObject *parent) : QGraphicsScene(parent)
     mMsgLb->setAlignment(Qt::AlignCenter);
     addWidget(mMsgLb);
 
-
     mNameLe = new QLineEdit();
     mNameLe->setFocus();
     mNameLe->setPlaceholderText("Name");
@@ -42,12 +41,10 @@ WinningScene::WinningScene(QObject *parent) : QGraphicsScene(parent)
     addWidget(mNameLe);
 
     mConfirmBtn = new QPushButton();
-//    mConfirmBtn->setStyleSheet();
     mConfirmBtn->setStyleSheet("QPushButton:hover{border-image: url(://SubmitBtnHv.png);}\nQPushButton{border-image: url(://SubmitBtn.png);}");
     mConfirmBtn->setAttribute(Qt::WA_TranslucentBackground);
     mConfirmBtn->setGeometry(QRect(this->width()/2 - 40 , 325, 80, 80));
     addWidget(mConfirmBtn);
-
     connect(mConfirmBtn, SIGNAL(clicked()), this, SLOT(saveNameAndExit()));
 
     mNameLe->setFocus();

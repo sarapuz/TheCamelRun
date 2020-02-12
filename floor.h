@@ -17,13 +17,10 @@ public:
 
     enum { Type = UserType + 2 };
     int type() const;
-
-public:
-    bool mVisible;
-   // virtual QPainterPath shape() const;
-
     bool visible() const;
     void setVisible(bool visible);
+
+    bool mVisible;
 };
 
 #endif // FLOOR_H

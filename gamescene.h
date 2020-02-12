@@ -41,13 +41,10 @@ public:
     void initPlayField();
     qreal jumpFactor() const;
     void setJumpFactor(const qreal &jumpFactor);
-
     QPainterPath shape() const;
-
     int collidingDirection() const;
     void setCollidingDirection(int collidingDirection);
     qreal slideFactor() const;
-
     void setSlideFactor(const qreal &slideFactor);
     int level() const;
     void setLevel(int level);

@@ -15,9 +15,7 @@ public:
 
     enum { Type = UserType + 4 };
     int type() const;
-
     void explode();
-
     bool explosion() const;
     void setExplosion(bool explosion);
 

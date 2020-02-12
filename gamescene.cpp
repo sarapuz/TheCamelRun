@@ -286,7 +286,7 @@ void GameScene::initLevelTwo(){
     mCacti->setPen(Qt::NoPen);
     mCacti->setPos(0, mGroundLevel - 100);
     const int xRange = (mMaxX - mMinX - 200) * 0.94;
-    QList<int> lowerBound({int(mMinX) + 100, 547, 986, 1698, 2234, 2600, 3300, 4000});
+    QList<int> lowerBound({int(mMinX) + 100, 547, 986, 1698, 2264, 2600, 3300, 4000});
     QList<int> upperBound(             {280, 788, 1461, 1995, 2600, 3080, 4000, xRange});
     QList<int> numOfCacti({1,1,1,2,2,2,2,3});
     for (int i = 0; i < 8; ++i) {
@@ -328,7 +328,6 @@ void GameScene::initLevelTwo(){
 }
 
 void GameScene::startLevel(int lvl){
-    //mPlayer->setLive(true);
     initPlayField();
 
     switch (lvl) {
@@ -355,7 +354,6 @@ void GameScene::keyPressEvent(QKeyEvent *event)
     if (event->isAutoRepeat()) {
         return;
     }
-
 
     if(event->key() == mRightKey){
         addHorizontalInput(1);
@@ -423,8 +421,6 @@ void GameScene::movePlayer()
     const int maxWorldShift = mFieldWidth - qRound(width());
     mWorldShift = qBound(0, mWorldShift, maxWorldShift);
     mPlayer->setX(mCurrentX - mWorldShift);
-    //mPlayer->setY(mGroundLevel - mPlayer ->boundingRect().height() / 2);
-
     const qreal ratio = qreal(mWorldShift) / maxWorldShift;
 
     applyParallax(ratio, mBkg);
@@ -727,13 +723,11 @@ bool GameScene::checkCollidingH()
                 // When moving while jumping
                 // landing on cactus must result in sliding
                 if(mJumping){
-                    qDebug() <<"Poziv iz H";
                     checkCollidingV();
                     return false;
                 }
                 mColliding = true;
                 mPlayer->causeDamage(c->getDamage());
-                qDebug() << "CollidingH" << c->getDamage();
                 mCollidingDirection = mPlayer->direction();
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0) {
@@ -798,9 +792,7 @@ bool GameScene::checkCollidingV()
             if(!mColliding && !mSliding){
                 mColliding = true;
                 mPlayer->causeDamage(c->getDamage());
-                qDebug() << "Check Colliding V" << c->getDamage();
                 mGroundLevel = mMinY - c->boundingRect().height();
-                // simulacija preskakanja!
 
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0){
@@ -859,7 +851,6 @@ void GameScene::sinking()
 
 void GameScene::revivePlayer()
 {
-    qDebug() << "-------------";
     mPlayer->setLive(true);
 }
 

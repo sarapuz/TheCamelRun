@@ -44,8 +44,6 @@ signals:
     void leftKeyChanged(int);
     void rightKeyChanged(int);
     void jumpKeyChanged(int);
-
-
 };
 
 #endif // SETTINGSSCENE_H
