@@ -38,6 +38,7 @@ GameScene::GameScene(QObject *parent) :
     mCollidingDirection(0),
     mScorpDamage(false),
     mJumping(false),
+    mSliding(false),
     mLeftKey(Qt::Key_Left),
     mRightKey(Qt::Key_Right),
     mJumpKey(Qt::Key_Space)
@@ -135,13 +136,14 @@ GameScene::GameScene(QObject *parent) :
     mSlideAnimation->setTargetObject(this);
     mSlideAnimation->setPropertyName("slideFactor");
     mSlideAnimation->setStartValue(0);
-    mSlideAnimation->setKeyValueAt(0.5, 0.3);
+    mSlideAnimation->setKeyValueAt(0.5, 0.2);
     mSlideAnimation->setEndValue(0);
     mSlideAnimation->setDuration(600);
     mSlideAnimation->setEasingCurve(QEasingCurve::OutInQuad);
 
     connect(mJumpAnimation, &QAbstractAnimation::finished, [this](){mJumping = false;});
     connect(mJumpAnimation, &QAbstractAnimation::finished, this, &GameScene::checkCollidingV);
+    connect(mSlideAnimation, &QAbstractAnimation::finished, [this](){mSliding = false;});
 }
 
 
@@ -209,6 +211,7 @@ void GameScene::initLevelOne(){
     for(int i = 0; i < 4; i++){
         Scorpio *s = new Scorpio(scorpioPos[i], 200 *(i+1), mScorpios);
         s->setPos(s->positionX(),s->positionY());
+        s->setDamage(2);
     }
     addItem(mScorpios);
     connect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
@@ -720,14 +723,17 @@ bool GameScene::checkCollidingH()
             }
         }
         else if (Cactus *c = dynamic_cast<Cactus*>(item)) {
-            // When moving while jumping
-            // landing on cactus must result in sliding
-            if(mJumping){
-                checkCollidingV();
-                return false;
-            }
-            if(!mColliding && mPlayer->causeDamage(c->getDamage())){
+            if(!mColliding && !mSliding){
+                // When moving while jumping
+                // landing on cactus must result in sliding
+                if(mJumping){
+                    qDebug() <<"Poziv iz H";
+                    checkCollidingV();
+                    return false;
+                }
                 mColliding = true;
+                mPlayer->causeDamage(c->getDamage());
+                qDebug() << "CollidingH" << c->getDamage();
                 mCollidingDirection = mPlayer->direction();
                 emit healthBarChanged(c->getDamage());
                 if(mPlayer->currentHealth() <= 0) {
@@ -789,9 +795,11 @@ bool GameScene::checkCollidingV()
             return true;
         }
         else if (Cactus *c = dynamic_cast<Cactus*>(item)) {
-            if(!mColliding && mPlayer->causeDamage(c->getDamage())){
-                mGroundLevel = mMinY - c->boundingRect().height();
+            if(!mColliding && !mSliding){
                 mColliding = true;
+                mPlayer->causeDamage(c->getDamage());
+                qDebug() << "Check Colliding V" << c->getDamage();
+                mGroundLevel = mMinY - c->boundingRect().height();
                 // simulacija preskakanja!
 
                 emit healthBarChanged(c->getDamage());
@@ -800,8 +808,10 @@ bool GameScene::checkCollidingV()
                     disconnect(&mTimerEn, &QTimer::timeout, this, &GameScene::moveScorpio);
                     emit youLost();
                 }
-                if(mPlayer->live())
+                if(mPlayer->live()){
+                    mSliding = true;
                     slide();
+                }
             }
             return true;
         }
@@ -849,6 +859,7 @@ void GameScene::sinking()
 
 void GameScene::revivePlayer()
 {
+    qDebug() << "-------------";
     mPlayer->setLive(true);
 }
 

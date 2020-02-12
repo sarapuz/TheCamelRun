@@ -117,6 +117,7 @@ private:
     int mCollidingDirection;
     bool mScorpDamage;
     bool mJumping;
+    bool mSliding;
 
     Qt::Key mLeftKey;
     Qt::Key mRightKey;
