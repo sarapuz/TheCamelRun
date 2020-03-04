@@ -5,39 +5,39 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 
 HEADERS += \
-    backgrounditem.h \
-    cactus.h \
-    coin.h \
-    floor.h \
-    gamemanager.h \
-    gamescene.h \
-    highscorescene.h \
-    losingscene.h \
-    menuscene.h \
-    platform.h \
-    player.h \
-    scorpio.h \
-    settingsscene.h \
-    tree.h \
-    winningscene.h
+    Header/backgrounditem.h \
+    Header/cactus.h \
+    Header/coin.h \
+    Header/floor.h \
+    Header/gamemanager.h \
+    Header/gamescene.h \
+    Header/highscorescene.h \
+    Header/losingscene.h \
+    Header/menuscene.h \
+    Header/platform.h \
+    Header/player.h \
+    Header/scorpio.h \
+    Header/settingsscene.h \
+    Header/tree.h \
+    Header/winningscene.h
 
 SOURCES += \
-    backgrounditem.cpp \
-    cactus.cpp \
-    coin.cpp \
-    floor.cpp \
-    gamemanager.cpp \
-    gamescene.cpp \
-    highscorescene.cpp \
-    losingscene.cpp \
-    main.cpp \
-    menuscene.cpp \
-    platform.cpp \
-    player.cpp \
-    scorpio.cpp \
-    settingsscene.cpp \
-    tree.cpp \
-    winningscene.cpp
+    Source/backgrounditem.cpp \
+    Source/cactus.cpp \
+    Source/coin.cpp \
+    Source/floor.cpp \
+    Source/gamemanager.cpp \
+    Source/gamescene.cpp \
+    Source/highscorescene.cpp \
+    Source/losingscene.cpp \
+    Source/main.cpp \
+    Source/menuscene.cpp \
+    Source/platform.cpp \
+    Source/player.cpp \
+    Source/scorpio.cpp \
+    Source/settingsscene.cpp \
+    Source/tree.cpp \
+    Source/winningscene.cpp
 
 RESOURCES += \
-    resource.qrc
+    Resource/resource.qrc
