@@ -1,10 +1,10 @@
-#include "gamemanager.h"
-#include "menuscene.h"
-#include "gamescene.h"
-#include "settingsscene.h"
-#include "highscorescene.h"
-#include "losingscene.h"
-#include "winningscene.h"
+#include "Header/gamemanager.h"
+#include "Header/menuscene.h"
+#include "Header/gamescene.h"
+#include "Header/settingsscene.h"
+#include "Header/highscorescene.h"
+#include "Header/losingscene.h"
+#include "Header/winningscene.h"
 
 #include <QWidget>
 #include <QDebug>

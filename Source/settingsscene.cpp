@@ -1,5 +1,5 @@
-#include "settingsscene.h"
-#include "backgrounditem.h"
+#include "Header/settingsscene.h"
+#include "Header/backgrounditem.h"
 
 #include <QFontDatabase>
 #include <QIcon>

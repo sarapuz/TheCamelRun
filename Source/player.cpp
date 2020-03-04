@@ -1,4 +1,4 @@
-#include "player.h"
+#include "Header/player.h"
 
 
 Player::Player(QGraphicsItem *parent)

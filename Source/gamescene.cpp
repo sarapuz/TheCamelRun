@@ -1,11 +1,11 @@
-#include "gamescene.h"
-#include "backgrounditem.h"
-#include "player.h"
-#include "cactus.h"
-#include "floor.h"
-#include "tree.h"
-#include "coin.h"
-#include "scorpio.h"
+#include "Header/gamescene.h"
+#include "Header/backgrounditem.h"
+#include "Header/player.h"
+#include "Header/cactus.h"
+#include "Header/floor.h"
+#include "Header/tree.h"
+#include "Header/coin.h"
+#include "Header/scorpio.h"
 
 #include <QCoreApplication>
 #include <QDateTime>

@@ -1,5 +1,5 @@
-#include "scorpio.h"
-#include "player.h"
+#include "Header/scorpio.h"
+#include "Header/player.h"
 
 
 Scorpio::Scorpio(int position, int radius, QGraphicsItem *parent):

@@ -1,5 +1,5 @@
-#include "losingscene.h"
-#include "backgrounditem.h"
+#include "Header/losingscene.h"
+#include "Header/backgrounditem.h"
 
 #include <QKeyEvent>
 #include <QFontDatabase>

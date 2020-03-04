@@ -1,5 +1,5 @@
-#include "highscorescene.h"
-#include "backgrounditem.h"
+#include "Header/highscorescene.h"
+#include "Header/backgrounditem.h"
 
 #include <QFontDatabase>
 #include <QHeaderView>

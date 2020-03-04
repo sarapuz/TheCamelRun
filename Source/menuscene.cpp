@@ -1,5 +1,5 @@
-#include "menuscene.h"
-#include "backgrounditem.h"
+#include "Header/menuscene.h"
+#include "Header/backgrounditem.h"
 
 #include <QFontDatabase>
 #include <QFont>

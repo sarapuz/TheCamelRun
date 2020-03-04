@@ -1,6 +1,6 @@
-#include "gamemanager.h"
-#include "floor.h"
-#include "cactus.h"
+#include "Header/gamemanager.h"
+#include "Header/floor.h"
+#include "Header/cactus.h"
 
 #include <QDebug>
 #include <QApplication>

@@ -1,4 +1,4 @@
-#include "platform.h"
+#include "Header/platform.h"
 
 
 Platform::Platform(QGraphicsItem *parent) :

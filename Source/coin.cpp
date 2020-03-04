@@ -1,4 +1,4 @@
-#include "coin.h"
+#include "Header/coin.h"
 
 #include <QParallelAnimationGroup>
 #include <QPen>
